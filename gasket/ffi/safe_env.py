@@ -115,6 +115,11 @@ def to_js_value(value: Any) -> Any:
     return _to_js_value(value)
 
 
+def to_js(value: Any) -> Any:
+    """Convert Python values to JavaScript values suitable for Workers APIs."""
+    return _to_js_value(value)
+
+
 def _to_py_safe(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any:
     """Recursively convert JsProxy/null/undefined values to native Python."""
     if _depth is not None:
@@ -278,6 +283,9 @@ class SafeR2List:
     cursor: str | None = None
 
 
+R2ListResult = SafeR2List
+
+
 class SafeR2:
     def __init__(self, bucket: Any) -> None:
         self._bucket = bucket
@@ -372,11 +380,15 @@ class SafeVectorize:
         return _to_py_safe(await self._index.upsert(_to_js_value(items))) or {}
 
     async def delete(self, ids: list[str]) -> dict[str, Any]:
+        return await self.delete_by_ids(ids)
+
+    async def delete_by_ids(self, ids: list[str]) -> dict[str, Any]:
         method = getattr(self._index, "deleteByIds", getattr(self._index, "delete", None))
         return _to_py_safe(await method(_to_js_value(ids))) or {}
 
     async def deleteByIds(self, ids: list[str]) -> dict[str, Any]:
-        return await self.delete(ids)
+        """Compatibility alias for JavaScript-style callers; prefer delete_by_ids()."""
+        return await self.delete_by_ids(ids)
 
 
 class SafeService:
@@ -587,9 +599,45 @@ def _headers_to_dict(headers: Any) -> dict[str, str]:
     return out
 
 
-__all__ = [name for name in globals() if name.startswith("Safe") or name in {
-    "HAS_PYODIDE", "JsException", "MAX_CONVERSION_DEPTH", "get_js_null", "js_null", "is_js_null",
-    "is_js_missing", "is_js_null_or_undefined", "_is_js_null_or_undefined", "_is_js_undefined", "d1_null", "to_js_value", "_to_js_value", "to_js_bytes", "to_py", "_to_py_safe",
-    "to_py_bytes", "consume_readable_stream", "stream_r2_body", "get_r2_size", "d1_rows",
-    "d1_first", "HttpError", "HttpResponse", "http_fetch", "safe_http_fetch",
-}]
+__all__ = [
+    "HAS_PYODIDE",
+    "JsException",
+    "MAX_CONVERSION_DEPTH",
+    "js_null",
+    "get_js_null",
+    "is_js_null",
+    "is_js_missing",
+    "is_js_null_or_undefined",
+    "d1_null",
+    "to_py",
+    "to_js",
+    "to_js_value",
+    "to_js_bytes",
+    "to_py_bytes",
+    "consume_readable_stream",
+    "stream_r2_body",
+    "get_r2_size",
+    "d1_rows",
+    "d1_first",
+    "SafeD1Statement",
+    "SafeD1",
+    "SafeR2Object",
+    "SafeR2List",
+    "R2ListResult",
+    "SafeR2",
+    "SafeKV",
+    "SafeQueue",
+    "SafeAI",
+    "SafeVectorize",
+    "SafeService",
+    "SafeFetcher",
+    "SafeDurableObjectNamespace",
+    "SafeAnalyticsEngine",
+    "SafeCache",
+    "SafeAssets",
+    "SafeEnv",
+    "HttpError",
+    "HttpResponse",
+    "http_fetch",
+    "safe_http_fetch",
+]

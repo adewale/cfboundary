@@ -159,6 +159,7 @@ The CLI is standalone. It is not a Ruff plugin.
 - [`docs/api-surface-audit.md`](docs/api-surface-audit.md)
 - [`docs/compatibility-matrix.md`](docs/compatibility-matrix.md)
 - [`docs/application-adapters.md`](docs/application-adapters.md)
+- [`docs/surface-polish.md`](docs/surface-polish.md)
 - [`docs/wrapper-audit.md`](docs/wrapper-audit.md)
 - [`docs/migrating-from-local-wrappers.md`](docs/migrating-from-local-wrappers.md)
 - [`docs/migrating-from-product-specific-wrappers.md`](docs/migrating-from-product-specific-wrappers.md)
