@@ -48,7 +48,7 @@ The binding names are yours. Gasket only knows the binding *kind*.
 - Testing and smoke tests: `gasket.testing`
 - Checks and deploy readiness: `gasket.checks`, `gasket.deploy`
 
-See `API_SURFACE_AUDIT.md` for the full surface audit.
+See [`docs/api-surface-audit.md`](docs/api-surface-audit.md) for the full surface audit.
 
 ## Why it exists
 
@@ -62,10 +62,17 @@ Cloudflare Python Workers run on Pyodide. Values crossing the Python/JavaScript 
 
 Gasket centralizes these rules.
 
+## Documentation
+
+- [`docs/index.md`](docs/index.md)
+- [`docs/api-surface-audit.md`](docs/api-surface-audit.md)
+- [`docs/wrapper-audit.md`](docs/wrapper-audit.md)
+- [`docs/rationale.md`](docs/rationale.md)
+
 ## Examples
 
-- `examples/basic_worker/README.md`
-- `examples/testing/README.md`
+- [`examples/basic_worker/README.md`](examples/basic_worker/README.md)
+- [`examples/testing/README.md`](examples/testing/README.md)
 
 ## CLI
 
@@ -77,6 +84,10 @@ gasket deploy .
 
 The CLI is intentionally standalone. It is not a Ruff plugin.
 
+## Project status
+
+Pre-1.0. The public surface is intentionally small and generic; new Cloudflare products are added only after a reusable FFI boundary pattern is proven.
+
 ## Changelog
 
-See `CHANGELOG.md`.
+See [`CHANGELOG.md`](CHANGELOG.md).
