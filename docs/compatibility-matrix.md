@@ -8,7 +8,7 @@ Gasket should be tested against both sides of the Cloudflare Python Workers boun
 |---|---|---|
 | CPython fallback | Ensures gasket and applications import and run in normal local tests. | `uv run pytest` without Pyodide modules. |
 | Pyodide fake | Exercises the production branches that use `js`, `pyodide.ffi.JsProxy`, `pyodide.ffi.jsnull`, and `to_js`. | `gasket.testing.fakes.patch_pyodide_runtime()`. |
-| Deployed Worker smoke | Catches platform behavior that mocks cannot model. | Application-specific smoke tests composed with `gasket.testing.smoke.SmokeBase`. |
+| Deployed Worker smoke | Catches platform behavior that mocks cannot model. | `GASKET_E2E_BASE_URL=... uv run pytest tests/e2e` plus application-specific smoke tests composed with `gasket.testing.smoke.SmokeBase`. |
 
 ## Boundary semantics to lock down
 
@@ -16,7 +16,7 @@ Gasket should be tested against both sides of the Cloudflare Python Workers boun
 |---|---|
 | Python `None` sent to D1 bind | Converted to `pyodide.ffi.jsnull` in Pyodide; remains `None` in CPython fakes. |
 | JavaScript `null` received from Worker API | Identified by `is_js_null()` and converted to Python `None` by `to_py`. |
-| JavaScript `undefined` received from Worker API | Arrives as Python `None`; `is_js_null(None)` is `False`, `is_js_null_or_undefined(None)` is `True`. |
+| JavaScript `undefined` received from Worker API | Arrives as Python `None`; `is_js_null(None)` is `False`, `is_js_missing(None)` is `True`. |
 | Python dict/list sent to Worker API | Converted through `to_js(..., dict_converter=Object.fromEntries, create_pyproxies=False)` in Pyodide. |
 | Bytes sent to binary APIs | Converted through `to_js_bytes()` in Pyodide. |
 | ReadableStream consumed in Python | Read with `getReader()` until done, not a single `arrayBuffer()` read for streams. |

@@ -31,7 +31,7 @@ The original `gasket.md` correctly identified the highest-value reusable pieces:
 3. **Some wrappers returned raw JS objects where conversion was expected.** For example, AI/R2/service APIs need a deliberate choice between raw passthrough and Python conversion.
 4. **Wrapper return shapes diverged.** One project's `SafeD1Statement.all()` returned a list; another returned a D1-like object with `.results`. Gasket should document one generic shape and applications can adapt if needed.
 5. **Observability hooks were embedded in wrappers.** Metrics are valuable, but app-specific event systems should be injected or layered outside generic wrappers.
-6. **Tests encouraged private-name coupling.** `_to_py_safe` and `_to_js_value` are useful compatibility exports, but public aliases should be preferred for new code.
+6. **Tests encouraged private-name coupling.** New Gasket tests and docs should use public helpers such as `to_py`, `to_js`, `js_null`, and `is_js_missing` instead of underscore-prefixed implementation details.
 7. **Deploy checks were product-specific.** Theme/template/example checks are Planet CF checks, not gasket checks. Gasket should provide primitives and generic validations.
 
 ### Recommended migration style

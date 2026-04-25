@@ -1,3 +1,4 @@
+from .orchestrator import DeployPlan, plan_deploy
 from .validator import validate_ready
-from .orchestrator import DeployResult, deploy
-__all__ = ["validate_ready", "DeployResult", "deploy"]
+
+__all__ = ["DeployPlan", "plan_deploy", "validate_ready"]

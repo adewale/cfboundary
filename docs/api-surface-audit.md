@@ -8,11 +8,11 @@ Gasket's scope is the Python/JavaScript FFI boundary for Cloudflare Python Worke
 |---|---|---|
 | Environment vars/secrets | `SafeEnv.var()`, `SafeEnv.secret()` | Converts null/undefined and enforces required secrets. |
 | D1 | `SafeD1`, `SafeD1Statement` | Covers `prepare`, `bind`, `first`, `all`, `run`, `exec`, `batch`; converts `None` to JS `null`. |
-| R2 | `SafeR2`, `SafeR2Object`, `SafeR2List` | Covers `get`, `put`, `delete`, `list`, bytes/text/stream access. |
+| R2 | `SafeR2`, `SafeR2Object`, `R2ListResult` | Covers `get`, `put`, `delete`, `list`, bytes/text/stream access. |
 | KV | `SafeKV` | Covers `get`, `put`, `delete`, `list`. |
 | Queues producers | `SafeQueue` | Covers `send`, `send_batch`. Consumer dispatch remains framework/application code. |
 | Workers AI | `SafeAI` | Covers `run` with input conversion. |
-| Vectorize | `SafeVectorize` | Covers `query`, `insert`, `upsert`, `delete`/`deleteByIds`. |
+| Vectorize | `SafeVectorize` | Covers `query`, `insert`, `upsert`, `delete`, and `delete_by_ids`. |
 | Service bindings / Fetcher | `SafeService`, `SafeFetcher` | Covers `fetch` and generic RPC method conversion. |
 | Durable Objects namespace | `SafeDurableObjectNamespace` | Covers ID creation and stub retrieval. Stub methods use `SafeService`. |
 | Analytics Engine | `SafeAnalyticsEngine` | Covers `writeDataPoint`. |
@@ -21,6 +21,7 @@ Gasket's scope is the Python/JavaScript FFI boundary for Cloudflare Python Worke
 | Scheduled events | `gasket.adapters.scheduled` | Normalizes scheduled event metadata and wraps env. |
 | Responses | `gasket.adapters.response.full_response` | Avoids ASGI StreamingResponse truncation for fully-buffered responses. |
 | Large R2 streaming | `gasket.adapters.streams.serve_r2_object_via_js` | Keeps large payloads on the JS side. |
+| HTTP fetch | `gasket.http.fetch`, `FetchResponse` | Normalizes Workers `fetch` and CPython `httpx` for tests/tools. |
 | Runtime probes | `gasket.compat.probes` | Detects Pyodide/Workers restrictions. |
 | Local testing | `gasket.testing.fakes`, `gasket.testing.smoke` | Tests production branches from CPython and validates deployed workers. |
 

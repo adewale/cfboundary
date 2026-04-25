@@ -8,42 +8,37 @@ request wrappers through :class:`SafeEnv` methods such as ``env.d1("DB")`` or
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from typing import Any, Literal
-from urllib.parse import urlencode
 
 try:
     import js  # type: ignore[import-not-found]
-    from js import fetch as js_fetch  # type: ignore[import-not-found]
-    from pyodide.ffi import JsException, JsProxy, jsnull, to_js  # type: ignore[import-not-found]
+    from pyodide.ffi import (  # type: ignore[import-not-found]
+        JsException,
+        JsProxy,
+        jsnull,
+        to_js as _pyodide_to_js,
+    )
 
     HAS_PYODIDE = True
 except ImportError:
     js = None  # type: ignore[assignment]
-    js_fetch = None  # type: ignore[assignment]
     JsProxy = None  # type: ignore[assignment,misc]
     jsnull = None  # type: ignore[assignment]
-    to_js = None  # type: ignore[assignment]
+    _pyodide_to_js = None  # type: ignore[assignment]
     HAS_PYODIDE = False
 
     class JsException(Exception):  # type: ignore[no-redef]
         """Stub outside Pyodide."""
 
-try:
-    import httpx
-except ImportError:
-    httpx = None  # type: ignore[assignment]
-
 MAX_CONVERSION_DEPTH = 50
 
 
-def get_js_null() -> Any:
+def js_null() -> Any:
     """Return JavaScript ``null`` in Workers; ``None`` in CPython tests.
 
-    Pyodide exposes the singleton as ``pyodide.ffi.jsnull``.  Avoid creating
-    null via ``js.eval()`` (blocked in Workers) or ``JSON.parse("null")``
-    (unnecessary when ``jsnull`` is available).
+    Pyodide exposes the singleton as ``pyodide.ffi.jsnull``. Avoid creating
+    null via ``js.eval()`` or ``JSON.parse("null")``.
     """
     return jsnull if HAS_PYODIDE else None
 
@@ -61,7 +56,7 @@ def is_js_null(value: Any) -> bool:
     return type(value).__name__ == "JsNull"
 
 
-def is_js_null_or_undefined(value: Any) -> bool:
+def is_js_missing(value: Any) -> bool:
     """Return True for JS null or JS undefined crossing into Python.
 
     JS undefined is represented as Python ``None`` by Pyodide.
@@ -69,27 +64,9 @@ def is_js_null_or_undefined(value: Any) -> bool:
     return value is None or is_js_null(value)
 
 
-_is_js_null_or_undefined = is_js_null_or_undefined
-
-
-def _is_js_undefined(value: Any) -> bool:
-    """Return True for JavaScript undefined as observed from Python."""
-    return value is None
-
-
-def js_null() -> Any:
-    """Public alias for :func:`get_js_null`."""
-    return get_js_null()
-
-
-def is_js_missing(value: Any) -> bool:
-    """Public alias for JS null-or-undefined checks at the boundary."""
-    return is_js_null_or_undefined(value)
-
-
 def d1_null(value: Any = None) -> Any:
     """Convert Python ``None`` to JavaScript ``null`` for D1 bind values."""
-    return get_js_null() if value is None else value
+    return js_null() if value is None else value
 
 
 def _to_js_value(value: Any) -> Any:
@@ -98,21 +75,16 @@ def _to_js_value(value: Any) -> Any:
     Dicts are converted to plain JS Objects, not Maps, and PyProxy creation is
     disabled so unsupported values fail fast rather than leaking proxies.
     """
-    if not HAS_PYODIDE or to_js is None:
+    if not HAS_PYODIDE or _pyodide_to_js is None:
         return value
-    return to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
+    return _pyodide_to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
 
 
 def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
     """Convert Python bytes-like values to a JS Uint8Array in Workers."""
-    if not HAS_PYODIDE or to_js is None:
+    if not HAS_PYODIDE or _pyodide_to_js is None:
         return data
-    return to_js(data)
-
-
-def to_js_value(value: Any) -> Any:
-    """Public alias for Python → JavaScript conversion."""
-    return _to_js_value(value)
+    return _pyodide_to_js(data)
 
 
 def to_js(value: Any) -> Any:
@@ -126,7 +98,7 @@ def _to_py_safe(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any
         depth = _depth
     if depth >= MAX_CONVERSION_DEPTH:
         return value
-    if is_js_null_or_undefined(value):
+    if is_js_missing(value):
         return None
     if isinstance(value, int | float | str | bool | bytes):
         return value
@@ -209,7 +181,7 @@ def get_r2_size(r2_obj: Any) -> int | None:
 
 
 def d1_rows(results: Any) -> list[dict[str, Any]]:
-    if is_js_null_or_undefined(results):
+    if is_js_missing(results):
         return []
     converted = _to_py_safe(results)
     rows = converted.get("results", converted) if isinstance(converted, dict) else getattr(converted, "results", converted)
@@ -277,13 +249,13 @@ class SafeR2Object:
 
 
 @dataclass
-class SafeR2List:
+class R2ListResult:
     objects: list[Any]
     truncated: bool = False
     cursor: str | None = None
 
 
-R2ListResult = SafeR2List
+R2ListResult = R2ListResult
 
 
 class SafeR2:
@@ -292,7 +264,7 @@ class SafeR2:
 
     async def get(self, key: str) -> SafeR2Object | None:
         result = await self._bucket.get(key)
-        return None if is_js_null_or_undefined(result) else SafeR2Object(result)
+        return None if is_js_missing(result) else SafeR2Object(result)
 
     async def put(self, key: str, body: bytes | bytearray | memoryview | str, *, http_metadata: dict | None = None, **kwargs: Any) -> Any:
         if isinstance(body, bytes | bytearray | memoryview):
@@ -307,14 +279,14 @@ class SafeR2:
     async def delete(self, key: str | list[str]) -> Any:
         return await self._bucket.delete(_to_js_value(key))
 
-    async def list(self, *, prefix: str | None = None, limit: int = 1000, cursor: str | None = None, **kwargs: Any) -> SafeR2List:
+    async def list(self, *, prefix: str | None = None, limit: int = 1000, cursor: str | None = None, **kwargs: Any) -> R2ListResult:
         opts = {"limit": limit, **kwargs}
         if prefix is not None:
             opts["prefix"] = prefix
         if cursor is not None:
             opts["cursor"] = cursor
         result = _to_py_safe(await self._bucket.list(_to_js_value(opts))) or {}
-        return SafeR2List(result.get("objects", []), bool(result.get("truncated", False)), result.get("cursor"))
+        return R2ListResult(result.get("objects", []), bool(result.get("truncated", False)), result.get("cursor"))
 
 
 class SafeKV:
@@ -323,7 +295,7 @@ class SafeKV:
 
     async def get(self, key: str, *, type: str = "text", **kwargs: Any) -> Any | None:
         result = await self._kv.get(key, {"type": type, **kwargs} if kwargs or type != "text" else None)
-        return None if is_js_null_or_undefined(result) else _to_py_safe(result)
+        return None if is_js_missing(result) else _to_py_safe(result)
 
     async def put(self, key: str, value: bytes | str, *, expiration_ttl: int | None = None, **kwargs: Any) -> Any:
         opts = dict(kwargs)
@@ -361,7 +333,7 @@ class SafeAI:
 
     async def run(self, model: str, inputs: dict[str, Any]) -> Any | None:
         result = await self._ai.run(model, _to_js_value(inputs))
-        return None if is_js_null_or_undefined(result) else _to_py_safe(result)
+        return None if is_js_missing(result) else _to_py_safe(result)
 
 
 class SafeVectorize:
@@ -386,9 +358,6 @@ class SafeVectorize:
         method = getattr(self._index, "deleteByIds", getattr(self._index, "delete", None))
         return _to_py_safe(await method(_to_js_value(ids))) or {}
 
-    async def deleteByIds(self, ids: list[str]) -> dict[str, Any]:
-        """Compatibility alias for JavaScript-style callers; prefer delete_by_ids()."""
-        return await self.delete_by_ids(ids)
 
 
 class SafeService:
@@ -452,7 +421,7 @@ class SafeCache:
 
     async def match(self, request: Any, **options: Any) -> Any | None:
         result = await self._cache.match(request, _to_js_value(options)) if options else await self._cache.match(request)
-        return None if is_js_null_or_undefined(result) else result
+        return None if is_js_missing(result) else result
 
     async def put(self, request: Any, response: Any) -> Any:
         return await self._cache.put(request, response)
@@ -480,7 +449,7 @@ class SafeEnv:
             value = getattr(self._env, name)
         except AttributeError:
             return default
-        return default if is_js_null_or_undefined(value) else value
+        return default if is_js_missing(value) else value
 
     def d1(self, name: str) -> SafeD1 | None:
         value = self.get(name)
@@ -542,44 +511,6 @@ class SafeEnv:
         return getattr(self._env, name)
 
 
-class HttpError(Exception):
-    def __init__(self, status_code: int, message: str, url: str | None = None) -> None:
-        super().__init__(message)
-        self.status_code = status_code
-        self.message = message
-        self.url = url
-
-
-class HttpResponse:
-    def __init__(self, status_code: int, text: str, headers: dict[str, str], final_url: str) -> None:
-        self.status_code = status_code
-        self.text = text
-        self.headers = headers
-        self.final_url = final_url
-
-    def json(self) -> Any:
-        return json.loads(self.text)
-
-
-async def http_fetch(url: str, *, method: str = "GET", headers: dict[str, str] | None = None, data: dict[str, Any] | str | bytes | None = None, timeout_seconds: int = 30) -> HttpResponse:
-    """Fetch a URL through Workers ``fetch`` in Pyodide or httpx in CPython."""
-    headers = headers or {}
-    if HAS_PYODIDE and js_fetch is not None:
-        opts: dict[str, Any] = {"method": method, "headers": headers, "redirect": "follow"}
-        if data is not None:
-            opts["body"] = urlencode(data) if isinstance(data, dict) else data
-        resp = await js_fetch(url, _to_js_value(opts))
-        return HttpResponse(int(resp.status), await resp.text(), _headers_to_dict(resp.headers), str(getattr(resp, "url", url) or url))
-    if httpx is None:
-        raise RuntimeError("httpx is required for http_fetch outside Pyodide")
-    async with httpx.AsyncClient(follow_redirects=True, timeout=timeout_seconds) as client:
-        resp = await client.request(method, url, headers=headers, data=data)
-        return HttpResponse(resp.status_code, resp.text, dict(resp.headers), str(resp.url))
-
-
-safe_http_fetch = http_fetch
-
-
 def _headers_to_dict(headers: Any) -> dict[str, str]:
     out: dict[str, str] = {}
     if headers is None:
@@ -604,14 +535,11 @@ __all__ = [
     "JsException",
     "MAX_CONVERSION_DEPTH",
     "js_null",
-    "get_js_null",
     "is_js_null",
     "is_js_missing",
-    "is_js_null_or_undefined",
     "d1_null",
     "to_py",
     "to_js",
-    "to_js_value",
     "to_js_bytes",
     "to_py_bytes",
     "consume_readable_stream",
@@ -622,7 +550,6 @@ __all__ = [
     "SafeD1Statement",
     "SafeD1",
     "SafeR2Object",
-    "SafeR2List",
     "R2ListResult",
     "SafeR2",
     "SafeKV",
@@ -636,8 +563,4 @@ __all__ = [
     "SafeCache",
     "SafeAssets",
     "SafeEnv",
-    "HttpError",
-    "HttpResponse",
-    "http_fetch",
-    "safe_http_fetch",
 ]

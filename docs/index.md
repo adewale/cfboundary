@@ -6,6 +6,7 @@ Gasket is a generic toolkit for Cloudflare Python Workers. These docs explain th
 
 - [Rationale](rationale.md) — why gasket exists and what it deliberately does not do.
 - [API surface audit](api-surface-audit.md) — Cloudflare Developer Platform surfaces covered by gasket and known gaps.
+- [Testing](testing.md) — local, property-based, coverage, and live E2E testing.
 - [Compatibility test matrix](compatibility-matrix.md) — the CPython, Pyodide-fake, and deployed-worker coverage expected for gasket and apps.
 - [Application adapters](application-adapters.md) — how to keep app-specific compatibility out of gasket.
 - [Surface polish backlog](surface-polish.md) — Pythonic API improvements implemented and still planned.

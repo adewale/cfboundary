@@ -42,13 +42,13 @@ def patch_pyodide_runtime(*, with_module: FakeJsModule | None = None):
     import gasket.ffi.safe_env as target
 
     fake_jsnull = JsNull()
-    old = (target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target.to_js)
+    old = (target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target._pyodide_to_js)
     target.HAS_PYODIDE = True
     target.js = with_module or FakeJsModule()
     target.JsProxy = FakeJsProxy
     target.jsnull = fake_jsnull
-    target.to_js = lambda value, **kwargs: value
+    target._pyodide_to_js = lambda value, **kwargs: value
     try:
         yield
     finally:
-        target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target.to_js = old
+        target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target._pyodide_to_js = old

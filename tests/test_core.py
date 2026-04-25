@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from gasket.ffi import SafeEnv, d1_null, get_js_null, is_js_missing, is_js_null, to_py
+from gasket.ffi import SafeEnv, d1_null, is_js_missing, is_js_null, js_null, to_py
 from gasket.testing.fakes import FakeJsProxy, patch_pyodide_runtime
 
 
@@ -20,14 +20,14 @@ def test_safe_env_is_binding_name_agnostic() -> None:
 
 def test_to_py_converts_nested_js_proxy_values() -> None:
     with patch_pyodide_runtime():
-        jsnull = get_js_null()
+        jsnull = js_null()
         proxy = FakeJsProxy({"ok": True, "none": jsnull, "nested": [FakeJsProxy({"x": 1})]})
         assert to_py(proxy) == {"ok": True, "none": None, "nested": [{"x": 1}]}
 
 
 def test_pyodide_null_and_undefined_semantics() -> None:
     with patch_pyodide_runtime():
-        assert is_js_null(get_js_null()) is True
+        assert is_js_null(js_null()) is True
         assert is_js_null(None) is False
         assert is_js_missing(None) is True
 

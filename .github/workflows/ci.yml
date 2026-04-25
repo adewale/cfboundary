@@ -28,5 +28,7 @@ jobs:
           PY
       - name: CLI smoke
         run: uv run gasket doctor
+      - name: Ruff
+        run: uv run ruff check .
       - name: Tests
-        run: uv run pytest
+        run: uv run pytest --cov=gasket --cov-branch --cov-report=term-missing

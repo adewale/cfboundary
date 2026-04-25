@@ -65,6 +65,7 @@ For gasket development:
 ```bash
 uv sync --group dev
 uv run pytest
+GASKET_E2E_BASE_URL=https://your-worker.example.workers.dev uv run pytest tests/e2e
 ```
 
 ## Quick start
@@ -97,7 +98,7 @@ The binding names are yours. Gasket only knows the binding **kind**.
 ### FFI and binding wrappers
 
 - D1: `SafeD1`, `SafeD1Statement`
-- R2: `SafeR2`, `SafeR2Object`, `SafeR2List`
+- R2: `SafeR2`, `SafeR2Object`, `R2ListResult`
 - KV: `SafeKV`
 - Queues: `SafeQueue`
 - Workers AI: `SafeAI`
@@ -119,7 +120,8 @@ The binding names are yours. Gasket only knows the binding **kind**.
 - `gasket.testing.fakes` for exercising Pyodide branches from CPython.
 - `gasket.testing.smoke.SmokeBase` for deployed-worker smoke checks.
 - `gasket.checks` for FFI-boundary, Pyodide-pitfall, handler, and vendor checks.
-- `gasket.deploy.validate_ready()` for generic deploy-readiness validation.
+- `gasket.deploy.validate_ready()` and `gasket.deploy.plan_deploy()` for generic deploy-readiness planning.
+- `gasket.http.fetch()` for Workers/CPython HTTP fetch normalization.
 - `gasket.compat.probes` for runtime compatibility probes.
 
 See [`docs/api-surface-audit.md`](docs/api-surface-audit.md) for the full Cloudflare Developer Platform surface audit.
@@ -147,7 +149,7 @@ class AppEnv(SafeEnv):
 ```bash
 uv run gasket check .
 uv run gasket doctor
-uv run gasket deploy .
+uv run gasket plan-deploy .
 ```
 
 The CLI is standalone. It is not a Ruff plugin.
@@ -157,6 +159,7 @@ The CLI is standalone. It is not a Ruff plugin.
 - [`docs/index.md`](docs/index.md)
 - [`docs/rationale.md`](docs/rationale.md)
 - [`docs/api-surface-audit.md`](docs/api-surface-audit.md)
+- [`docs/testing.md`](docs/testing.md)
 - [`docs/compatibility-matrix.md`](docs/compatibility-matrix.md)
 - [`docs/application-adapters.md`](docs/application-adapters.md)
 - [`docs/surface-polish.md`](docs/surface-polish.md)

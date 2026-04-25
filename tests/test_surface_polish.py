@@ -6,8 +6,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 import gasket.ffi as ffi
-from gasket.ffi import SafeVectorize, is_js_missing, is_js_null, js_null, to_js, to_py
-from gasket.ffi.safe_env import SafeR2List
+from gasket.ffi import R2ListResult, SafeVectorize, is_js_missing, is_js_null, js_null, to_js, to_py
 from gasket.testing.fakes import patch_pyodide_runtime
 
 json_scalars = st.none() | st.booleans() | st.integers() | st.floats(allow_nan=False) | st.text()
@@ -26,13 +25,17 @@ def test_preferred_public_names_are_exported_from_ffi() -> None:
     assert callable(ffi.is_js_missing)
 
 
-def test_star_import_surface_does_not_export_private_compat_names() -> None:
+def test_star_import_surface_has_no_private_or_compat_names() -> None:
     assert "to_py" in ffi.__all__
     assert "to_js" in ffi.__all__
     assert "js_null" in ffi.__all__
     assert "is_js_missing" in ffi.__all__
-    assert "_to_py_safe" not in ffi.__all__
-    assert "_to_js_value" not in ffi.__all__
+    assert not any(name.startswith("_") for name in ffi.__all__)
+    assert "get_js_null" not in ffi.__all__
+    assert "is_js_null_or_undefined" not in ffi.__all__
+    assert "to_js_value" not in ffi.__all__
+    assert "HttpResponse" not in ffi.__all__
+    assert "http_fetch" not in ffi.__all__
 
 
 @given(json_values)
@@ -45,7 +48,15 @@ def test_to_js_is_identity_in_cpython(value) -> None:
     assert to_js(value) == value
 
 
-@given(st.one_of(st.booleans(), st.integers(), st.text(), st.lists(json_scalars), st.dictionaries(st.text(), json_scalars)))
+@given(
+    st.one_of(
+        st.booleans(),
+        st.integers(),
+        st.text(),
+        st.lists(json_scalars),
+        st.dictionaries(st.text(), json_scalars),
+    )
+)
 def test_d1_null_only_changes_none(value) -> None:
     from gasket.ffi import d1_null
 
@@ -78,11 +89,12 @@ def run(coro):
     return asyncio.run(coro)
 
 
-def test_vectorize_prefers_pythonic_delete_by_ids_alias() -> None:
+def test_vectorize_uses_pythonic_delete_by_ids() -> None:
     assert run(SafeVectorize(VectorizeDeleteByIdsOnly()).delete_by_ids(["a"])) == {"deleted": ["a"]}
     assert run(SafeVectorize(VectorizeDeleteOnly()).delete_by_ids(["b"])) == {"deleted": ["b"]}
+    assert not hasattr(SafeVectorize(VectorizeDeleteOnly()), "deleteByIds")
 
 
 def test_result_aliases_are_available_for_pythonic_docs() -> None:
     safe_env = importlib.import_module("gasket.ffi.safe_env")
-    assert safe_env.R2ListResult is SafeR2List
+    assert safe_env.R2ListResult is R2ListResult

@@ -9,7 +9,7 @@ from gasket.checks import (
     check_pyodide_pitfalls,
     check_vendor,
 )
-from gasket.deploy import validate_ready
+from gasket.deploy import plan_deploy
 
 
 def _print(findings):
@@ -26,8 +26,9 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("doctor")
 
-    p_deploy = sub.add_parser("deploy")
+    p_deploy = sub.add_parser("plan-deploy")
     p_deploy.add_argument("project_root", nargs="?", default=".")
+    p_deploy.add_argument("--environment", default="production")
 
     args = parser.parse_args(argv)
     if args.cmd == "doctor":
@@ -35,10 +36,12 @@ def main(argv: list[str] | None = None) -> int:
 
         print(f"workers_runtime={is_workers_runtime()}")
         return 0
-    if args.cmd == "deploy":
-        findings = validate_ready(Path(args.project_root))
-        _print(findings)
-        return 1 if any(f.severity == "error" for f in findings) else 0
+    if args.cmd == "plan-deploy":
+        plan = plan_deploy(Path(args.project_root), environment=args.environment)
+        _print(plan.findings)
+        print(f"can_deploy={plan.can_deploy}")
+        print(f"pending_migrations={len(plan.pending_migrations)}")
+        return 0 if plan.can_deploy else 1
 
     paths = [Path(p) for p in args.paths]
     findings = []
