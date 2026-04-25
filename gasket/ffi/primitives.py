@@ -8,15 +8,18 @@ from .safe_env import (  # noqa: F401
     consume_readable_stream,
     d1_null,
     get_js_null,
+    is_js_missing,
     is_js_null,
     is_js_null_or_undefined,
+    js_null,
     stream_r2_body,
     to_js_bytes,
+    to_js_value,
+    to_py,
     to_py_bytes,
 )
 
-to_py = _to_py_safe
-to_js = _to_js_value
+to_js = to_js_value
 
 
 def is_js_proxy(x: object) -> bool:

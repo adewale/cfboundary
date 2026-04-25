@@ -77,6 +77,16 @@ def _is_js_undefined(value: Any) -> bool:
     return value is None
 
 
+def js_null() -> Any:
+    """Public alias for :func:`get_js_null`."""
+    return get_js_null()
+
+
+def is_js_missing(value: Any) -> bool:
+    """Public alias for JS null-or-undefined checks at the boundary."""
+    return is_js_null_or_undefined(value)
+
+
 def d1_null(value: Any = None) -> Any:
     """Convert Python ``None`` to JavaScript ``null`` for D1 bind values."""
     return get_js_null() if value is None else value
@@ -98,6 +108,11 @@ def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
     if not HAS_PYODIDE or to_js is None:
         return data
     return to_js(data)
+
+
+def to_js_value(value: Any) -> Any:
+    """Public alias for Python → JavaScript conversion."""
+    return _to_js_value(value)
 
 
 def _to_py_safe(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any:
@@ -122,6 +137,11 @@ def _to_py_safe(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any
     if isinstance(value, memoryview | bytearray):
         return list(value)
     return value
+
+
+def to_py(value: Any) -> Any:
+    """Public alias for JavaScript → Python conversion."""
+    return _to_py_safe(value)
 
 
 def to_py_bytes(value: Any) -> bytes:
@@ -568,8 +588,8 @@ def _headers_to_dict(headers: Any) -> dict[str, str]:
 
 
 __all__ = [name for name in globals() if name.startswith("Safe") or name in {
-    "HAS_PYODIDE", "JsException", "MAX_CONVERSION_DEPTH", "get_js_null", "is_js_null",
-    "is_js_null_or_undefined", "_is_js_null_or_undefined", "_is_js_undefined", "d1_null", "_to_js_value", "to_js_bytes", "_to_py_safe",
+    "HAS_PYODIDE", "JsException", "MAX_CONVERSION_DEPTH", "get_js_null", "js_null", "is_js_null",
+    "is_js_missing", "is_js_null_or_undefined", "_is_js_null_or_undefined", "_is_js_undefined", "d1_null", "to_js_value", "_to_js_value", "to_js_bytes", "to_py", "_to_py_safe",
     "to_py_bytes", "consume_readable_stream", "stream_r2_body", "get_r2_size", "d1_rows",
     "d1_first", "HttpError", "HttpResponse", "http_fetch", "safe_http_fetch",
 }]
