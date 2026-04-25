@@ -9,16 +9,14 @@ from urllib.parse import urlencode
 
 from gasket.ffi.safe_env import HAS_PYODIDE, _headers_to_dict, to_js
 
-try:
-    import js  # type: ignore[import-not-found]
+try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     from js import fetch as js_fetch  # type: ignore[import-not-found]
 except ImportError:
-    js = None  # type: ignore[assignment]
     js_fetch = None  # type: ignore[assignment]
 
-try:
+try:  # pragma: no cover - absence is covered by monkeypatching httpx to None
     import httpx
-except ImportError:
+except ImportError:  # pragma: no cover
     httpx = None  # type: ignore[assignment]
 
 

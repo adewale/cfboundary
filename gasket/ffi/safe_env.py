@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Literal
 
-try:
+try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     import js  # type: ignore[import-not-found]
     from pyodide.ffi import (  # type: ignore[import-not-found]
         JsException,
@@ -128,8 +128,6 @@ def to_py_bytes(value: Any) -> bytes:
         return b""
     if isinstance(value, bytes):
         return value
-    if isinstance(value, bytearray | memoryview):
-        return bytes(value)
     if isinstance(value, list):
         return bytes(value)
     return bytes(value)
@@ -177,7 +175,7 @@ async def stream_r2_body(r2_obj: Any) -> Any:
 
 def get_r2_size(r2_obj: Any) -> int | None:
     size = getattr(r2_obj, "size", None)
-    return None if is_js_null(size) else int(size)
+    return None if is_js_missing(size) else int(size)
 
 
 def d1_rows(results: Any) -> list[dict[str, Any]]:
@@ -253,9 +251,6 @@ class R2ListResult:
     objects: list[Any]
     truncated: bool = False
     cursor: str | None = None
-
-
-R2ListResult = R2ListResult
 
 
 class SafeR2:
@@ -357,7 +352,6 @@ class SafeVectorize:
     async def delete_by_ids(self, ids: list[str]) -> dict[str, Any]:
         method = getattr(self._index, "deleteByIds", getattr(self._index, "delete", None))
         return _to_py_safe(await method(_to_js_value(ids))) or {}
-
 
 
 class SafeService:

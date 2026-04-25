@@ -31,4 +31,6 @@ jobs:
       - name: Ruff
         run: uv run ruff check .
       - name: Tests
-        run: uv run pytest --cov=gasket --cov-branch --cov-report=term-missing
+        run: uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
+      - name: Build package
+        run: uv build

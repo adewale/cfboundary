@@ -54,5 +54,5 @@ def main(argv: list[str] | None = None) -> int:
     return 1 if any(f.severity == "error" for f in findings) else 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())

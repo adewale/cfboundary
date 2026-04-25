@@ -65,6 +65,40 @@ def test_fetch_cpython_form_body_and_redirect_option() -> None:
     assert client.request.await_args.kwargs["content"] == "a=b"
 
 
+def test_fetch_pyodide_without_body_and_cpython_missing_httpx(monkeypatch) -> None:
+    import gasket.http as http
+
+    class Headers:
+        def entries(self):
+            return self
+
+        def next(self):
+            return type("Entry", (), {"done": True})()
+
+    class Response:
+        status = 204
+        url = ""
+        headers = Headers()
+
+        async def text(self):
+            return ""
+
+    async def js_fetch(url, options):
+        assert "body" not in options
+        return Response()
+
+    monkeypatch.setattr(http, "HAS_PYODIDE", True)
+    monkeypatch.setattr(http, "js_fetch", js_fetch)
+    response = run(fetch("https://worker.test"))
+    assert response.status_code == 204
+    assert response.url == "https://worker.test"
+
+    monkeypatch.setattr(http, "HAS_PYODIDE", False)
+    monkeypatch.setattr(http, "httpx", None)
+    with pytest.raises(RuntimeError):
+        run(fetch("https://worker.test"))
+
+
 def test_fetch_cpython_errors_are_pythonic() -> None:
     import httpx
 

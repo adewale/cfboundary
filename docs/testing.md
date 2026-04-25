@@ -7,8 +7,9 @@ Gasket uses `uv`, `pytest`, `hypothesis`, `ruff`, and `pytest-cov`.
 ```bash
 uv run ruff check .
 uv run pytest
-uv run pytest --cov=gasket --cov-branch --cov-report=term-missing
+uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
 uv run python -m compileall -q gasket
+uv build
 ```
 
 ## Property-based tests
@@ -27,23 +28,16 @@ Live tests are skipped by default and run only when a deployed Worker URL is pro
 GASKET_E2E_BASE_URL=https://your-worker.example.workers.dev uv run pytest tests/e2e
 ```
 
-The live Worker must implement the fixture documented in `examples/live_worker/README.md`.
+The live Worker fixture lives in `examples/live_worker/` and verifies Gasket against real Cloudflare D1, R2, KV, response, and compatibility-probe behavior.
+
+A manual GitHub Actions workflow, `.github/workflows/e2e.yml`, runs the same tests against a provided deployed Worker URL.
 
 ## Coverage status
 
-Current coverage is measured honestly and is not configured to exclude broad parts of the package. The latest local run reports 76% line/branch coverage. The path to 100% is:
-
-1. Add Pyodide-fake tests for JS `Response` creation and R2 JS-side streaming.
-2. Add direct tests for every branch in `gasket.checks`.
-3. Add CLI tests for `check`, `plan-deploy`, invalid commands, and `__main__` execution.
-4. Add deploy validator tests for valid JSONC, invalid JSONC, migration directories, and vendor propagation.
-5. Add HTTP Pyodide-branch tests by faking `js.fetch`.
-6. Add tests for `gasket.ffi.primitives` re-exports.
-7. Add stream tests for `getReader()` success, `arrayBuffer()` fallback, and reader release on exceptions.
-8. Add branch tests for service, cache, assets, env optional/missing bindings, and CPython/Pyodide import branches.
-
-Once these are in place, CI should enforce:
+Unit/property/contract coverage is enforced at 100% line and branch coverage for the `gasket` package:
 
 ```bash
-uv run pytest --cov=gasket --cov-branch --cov-fail-under=100
+uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
 ```
+
+The live E2E tests are intentionally skipped unless `GASKET_E2E_BASE_URL` is set, so normal local and CI coverage measures the package code without requiring Cloudflare credentials. Real-platform confidence comes from running the E2E workflow against a deployed `examples/live_worker` instance.

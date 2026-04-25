@@ -11,7 +11,8 @@ class SmokeBase:
         self.request = request
         self.default_headers = default_headers or {}
 
-    def _url(self, path: str) -> str: return urljoin(self.base_url, path.lstrip("/"))
+    def _url(self, path: str) -> str:
+        return urljoin(self.base_url, path.lstrip("/"))
 
     def wait_for_ready(self, path: str = "/", *, accept_statuses: set[int] = {200}, max_attempts: int = 10, interval_s: float = 3.0) -> None:
         last = None

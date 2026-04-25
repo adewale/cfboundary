@@ -38,3 +38,16 @@ def test_live_worker_r2_roundtrip() -> None:
     status, body, _ = _get("/r2")
     assert status == 200
     assert body == "r2-ok"
+
+
+def test_live_worker_kv_roundtrip() -> None:
+    status, body, _ = _get("/kv")
+    assert status == 200
+    assert body == "kv-ok"
+
+
+def test_live_worker_compat_probes() -> None:
+    status, body, headers = _get("/compat")
+    assert status == 200
+    assert "application/json" in headers.get("Content-Type", headers.get("content-type", ""))
+    assert "eval_blocked" in body
