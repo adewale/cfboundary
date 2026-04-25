@@ -130,10 +130,9 @@ def test_safe_env_all_binding_methods_and_vars() -> None:
         env._private
 
 
-def test_wrapping_existing_wrappers_returns_same_instances() -> None:
+def test_wrapping_safe_env_preserves_raw_environment() -> None:
     raw = SimpleNamespace(D1=object(), R2=object(), KV=object(), QUEUE=object(), AI=object(), VEC=object(), SVC=object())
     env = SafeEnv(raw)
-    assert env.d1("D1") is env.d1("D1") if False else True  # wrapper creation is intentionally lightweight
     assert SafeEnv(env).get("D1") is raw.D1
 
 

@@ -151,6 +151,7 @@ def test_safe_queue_contract() -> None:
     queue = SafeQueue(raw)
     run(queue.send({"type": "job"}))
     assert raw.sent[0] == {"type": "job"}
+    assert raw.sent[1] == {"contentType": "json"}
     run(queue.send_batch([{"body": {"x": 1}}, "plain"]))
     assert raw.batch == [{"body": {"x": 1}}, {"body": "plain"}]
 

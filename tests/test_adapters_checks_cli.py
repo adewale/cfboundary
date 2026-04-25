@@ -24,10 +24,10 @@ def run(coro):
 
 
 def test_full_response_cpython() -> None:
-    assert run(full_response("ok", media_type="text/plain", cache_control="max-age=1")) == {
+    assert run(full_response("ok", media_type="text/plain", cache_control="max-age=1", status=201)) == {
         "body": "ok",
         "headers": {"Content-Type": "text/plain", "Cache-Control": "max-age=1"},
-        "status": 200,
+        "status": 201,
     }
 
 

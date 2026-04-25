@@ -14,6 +14,7 @@ async def full_response(
     media_type: str = "application/octet-stream",
     headers: dict[str, str] | None = None,
     cache_control: str | None = None,
+    status: int = 200,
 ) -> Any:
     """Return a JS Response with a fully buffered body.
 
@@ -23,5 +24,5 @@ async def full_response(
     if cache_control:
         final_headers["Cache-Control"] = cache_control
     if HAS_PYODIDE and js is not None:
-        return js.Response.new(body, to_js({"headers": final_headers}))
-    return {"body": body, "headers": final_headers, "status": 200}
+        return js.Response.new(body, to_js({"headers": final_headers, "status": status}))
+    return {"body": body, "headers": final_headers, "status": status}

@@ -104,7 +104,7 @@ class Queue:
 def test_queue_send_without_kwargs() -> None:
     raw = Queue()
     run(SafeQueue(raw).send("body"))
-    assert raw.args == ("body", None)
+    assert raw.args == ("body", {"contentType": "json"})
 
 
 def test_safe_env_returns_existing_wrappers_and_missing_none() -> None:

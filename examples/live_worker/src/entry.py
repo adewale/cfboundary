@@ -40,7 +40,7 @@ class Default(WorkerEntrypoint):
             import json
 
             return await full_response(json.dumps(await run_all_probes()), media_type="application/json")
-        return await full_response("not found", media_type="text/plain", headers={"Status": "404"})
+        return await full_response("not found", media_type="text/plain", status=404)
 
     async def _d1_null(self, env: SafeEnv) -> Any:
         db = env.d1("DATABASE")

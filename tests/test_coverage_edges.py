@@ -53,9 +53,10 @@ def test_validate_ready_valid_invalid_and_empty_migrations(tmp_path: Path) -> No
     (tmp_path / "wrangler.jsonc").write_text('{ // comment\n "name": "ok"\n}')
     migrations = tmp_path / "migrations"
     migrations.mkdir()
-    codes = {f.code for f in validate_ready(tmp_path)}
+    codes = {f.code for f in validate_ready(tmp_path, required_secrets=["TOKEN"])}
     assert "GSK100" not in codes
     assert "GSK102" in codes
+    assert "GSK103" in codes
 
     (tmp_path / "wrangler.jsonc").write_text("{")
     assert "GSK101" in {f.code for f in validate_ready(tmp_path)}

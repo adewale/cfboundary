@@ -28,5 +28,15 @@ def validate_ready(
     mig = project_root / "migrations"
     if mig.exists() and not list(mig.glob("*.sql")):
         findings.append(Finding(mig, 1, "warning", "GSK102", "migrations directory has no sql files"))
+    for secret_name in required_secrets or []:
+        findings.append(
+            Finding(
+                project_root,
+                1,
+                "warning",
+                "GSK103",
+                f"required secret {secret_name!r} must be verified by application-specific deploy checks",
+            )
+        )
     findings.extend(check_vendor(project_root))
     return findings

@@ -315,7 +315,8 @@ class SafeQueue:
         self._queue = queue
 
     async def send(self, body: Any, *, content_type: Literal["json", "text", "bytes", "v8"] = "json", **kwargs: Any) -> Any:
-        return await self._queue.send(_to_js_value(body), _to_js_value(kwargs) if kwargs else None)
+        options = {"contentType": content_type, **kwargs}
+        return await self._queue.send(_to_js_value(body), _to_js_value(options))
 
     async def send_batch(self, messages: list[Any]) -> Any:
         payload = [{"body": m} if not isinstance(m, dict) or "body" not in m else m for m in messages]

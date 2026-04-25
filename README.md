@@ -20,6 +20,28 @@ Cloudflare Python Workers run on Pyodide. That means values crossing between Pyt
 
 Gasket centralizes those rules in a small, generic toolkit.
 
+## Trust model
+
+Gasket is trustworthy for its current, deliberately narrow scope: generic Cloudflare Python Workers boundary mechanics. It is not yet a broad Workers framework or a long-lived, battle-hardened ecosystem package.
+
+Why the current scope is credible:
+
+- **Extracted from real Workers**: the first abstractions came from Tasche and Planet CF rather than speculative framework design.
+- **Generic by construction**: application binding names, route logic, auth/session behavior, row factories, feeds/articles/themes, and deployment topology stay out of Gasket.
+- **Tight public API**: preferred names such as `js_null()`, `is_js_missing()`, `to_py()`, `to_js()`, `R2ListResult`, `gasket.http.fetch()`, and `plan_deploy()` are tested; removed compatibility names are intentionally not exported.
+- **100% package line and branch coverage**: CI enforces `pytest --cov=gasket --cov-branch --cov-fail-under=100` without broad package exclusions.
+- **Property-based tests**: conversion invariants are tested with Hypothesis across nested Python values.
+- **Pyodide-specific semantics are locked down**: JavaScript `null` is `pyodide.ffi.jsnull`; JavaScript `undefined` arrives as Python `None`; D1 binds Python `None` as JS `null`.
+- **Real Cloudflare E2E exists**: `examples/live_worker/` is deployable with `pywrangler` and has passed live tests against D1, R2, KV, response creation, and compatibility probes.
+- **Consumer suites still pass**: Tasche and Planet CF keep their app-local wrapper APIs during migration, and their existing test suites pass unchanged.
+
+Remaining limits:
+
+- Tasche and Planet CF have not fully delegated their wrapper internals to Gasket yet, so migration should stay incremental behind each app's existing `wrappers.py` API.
+- Live E2E currently covers D1/R2/KV/responses/compat probes, not every Cloudflare binding such as Queues, AI, Vectorize, Durable Objects, Analytics Engine, or Cache.
+- Cloudflare Python Workers tooling changes quickly; keep running live E2E after changes to `pywrangler`, `workers-py`, compatibility flags, or packaging.
+- 100% coverage proves all current local code paths are exercised; it does not replace staging/prod smoke tests for real app behavior.
+
 ## Provenance
 
 Gasket is not speculative framework code. Its first abstractions were extracted from two real Cloudflare Python Workers applications:
@@ -164,12 +186,14 @@ The CLI is standalone. It is not a Ruff plugin.
 - [`docs/application-adapters.md`](docs/application-adapters.md)
 - [`docs/surface-polish.md`](docs/surface-polish.md)
 - [`docs/wrapper-audit.md`](docs/wrapper-audit.md)
+- [`docs/deep-audit-2026-04-25.md`](docs/deep-audit-2026-04-25.md)
 - [`docs/migrating-from-local-wrappers.md`](docs/migrating-from-local-wrappers.md)
 - [`docs/migrating-from-product-specific-wrappers.md`](docs/migrating-from-product-specific-wrappers.md)
 
 ## Examples
 
 - [`examples/basic_worker/README.md`](examples/basic_worker/README.md)
+- [`examples/live_worker/README.md`](examples/live_worker/README.md)
 - [`examples/testing/README.md`](examples/testing/README.md)
 
 ## Project status
