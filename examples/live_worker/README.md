@@ -11,9 +11,29 @@ It intentionally exercises:
 - KV put/get/delete
 - runtime compatibility probes
 
+## Secret-safety notes
+
+Do not commit Cloudflare API tokens, `.dev.vars`, `.env` files, generated Wrangler config, or vendored deployment output. The repository `.gitignore` excludes:
+
+- `.dev.vars*`
+- `.env*`
+- `.wrangler/`
+- `node_modules/`
+- `examples/live_worker/wrangler.deploy.jsonc`
+- `examples/live_worker/src/gasket/`
+
+`database_id`, KV namespace IDs, and bucket names are resource identifiers rather than API secrets, but this fixture still keeps the generated deployment config untracked.
+
 ## Configure Cloudflare resources
 
-Create resources and replace placeholders in `wrangler.jsonc`:
+Authenticate Wrangler locally first:
+
+```bash
+npx wrangler login
+npx wrangler whoami
+```
+
+Create resources:
 
 ```bash
 npx wrangler d1 create gasket-live-worker-db
@@ -21,20 +41,29 @@ npx wrangler r2 bucket create gasket-live-worker-objects
 npx wrangler kv namespace create SESSION_STORE
 ```
 
-Apply migrations:
+Export the IDs returned by Wrangler:
 
 ```bash
-npx wrangler d1 migrations apply gasket-live-worker-db --remote
+export GASKET_LIVE_D1_DATABASE_ID=<database_id>
+export GASKET_LIVE_KV_NAMESPACE_ID=<kv_namespace_id>
 ```
 
-## Make Gasket importable
+Prepare untracked deployment files and vendor the local checkout of Gasket into the Worker project:
 
-Until Gasket is published, install/copy it into this Worker project using your preferred Workers Python packaging flow. The important requirement is that `import gasket` works in the deployed Worker.
+```bash
+python3 scripts/prepare_deploy.py
+```
+
+Apply migrations using the generated config:
+
+```bash
+npx wrangler d1 migrations apply gasket-live-worker-db --remote --config wrangler.deploy.jsonc
+```
 
 ## Deploy
 
 ```bash
-npx wrangler deploy
+npx wrangler deploy --config wrangler.deploy.jsonc
 ```
 
 ## Run E2E tests
