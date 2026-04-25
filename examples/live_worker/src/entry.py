@@ -47,6 +47,7 @@ class Default(WorkerEntrypoint):
         key = f"probe-{int(time.time() * 1000)}"
         await db.prepare("INSERT INTO null_probe (id, value) VALUES (?, ?)").bind(key, None).run()
         row = await db.prepare("SELECT value FROM null_probe WHERE id = ?").bind(key).first()
+        await db.prepare("DELETE FROM null_probe WHERE id = ?").bind(key).run()
         return await full_response("null-ok" if row and row.get("value") is None else "null-failed", media_type="text/plain")
 
     async def _r2(self, env: SafeEnv) -> Any:

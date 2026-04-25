@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a generic Gasket bug
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please keep app-specific behavior in the application repos unless the problem is a generic Cloudflare Python Workers boundary issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Minimal code, Worker endpoint, or test that reproduces the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, Pyodide/Workers details, Wrangler/PyWrangler version, and Gasket version/commit.
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This is generic to Gasket, not specific to Tasche or Planet CF application logic.
+          required: true

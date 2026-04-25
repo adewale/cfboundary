@@ -187,6 +187,8 @@ The CLI is standalone. It is not a Ruff plugin.
 - [`docs/surface-polish.md`](docs/surface-polish.md)
 - [`docs/wrapper-audit.md`](docs/wrapper-audit.md)
 - [`docs/deep-audit-2026-04-25.md`](docs/deep-audit-2026-04-25.md)
+- [`docs/pre-release-checklist.md`](docs/pre-release-checklist.md)
+- [`docs/pre-release-execution-2026-04-25.md`](docs/pre-release-execution-2026-04-25.md)
 - [`docs/migrating-from-local-wrappers.md`](docs/migrating-from-local-wrappers.md)
 - [`docs/migrating-from-product-specific-wrappers.md`](docs/migrating-from-product-specific-wrappers.md)
 

@@ -19,7 +19,7 @@ The remaining risks are adoption risks rather than evidence of a broken library:
 ```text
 cd gasket && uv run ruff check .
 cd gasket && uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
-cd gasket && GASKET_E2E_BASE_URL=https://gasket-live-worker.adewale-883.workers.dev uv run pytest tests/e2e -q
+cd gasket && GASKET_E2E_BASE_URL=https://gasket-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
 cd gasket && uvx vulture gasket tests --min-confidence 80
 cd tasche && uv run --group test pytest -q
 cd planet_cf && uv run --all-extras pytest -q

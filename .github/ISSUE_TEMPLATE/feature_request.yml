@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest a generic Gasket feature
+title: "feature: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gasket intentionally stays generic. Please do not request app-specific binding names, routes, row factories, auth/session/feed/theme logic, or deployment topology.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What generic Cloudflare Python Workers boundary problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API or behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: checkboxes
+    id: evidence
+    attributes:
+      label: Evidence
+      options:
+        - label: This pattern is needed by at least one real application or live Worker fixture.
+          required: true
+        - label: The feature can be tested locally and, where relevant, with live Cloudflare E2E.
+          required: true
