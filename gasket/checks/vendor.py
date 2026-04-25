@@ -14,7 +14,8 @@ def _imports_under(src: Path) -> set[str]:
             continue
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                for alias in node.names: names.add(alias.name.split(".")[0])
+                for alias in node.names:
+                    names.add(alias.name.split(".")[0])
             elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
                 names.add(node.module.split(".")[0])
     return {n for n in names if n not in _STDLIB_LIKE and n not in {"src", "gasket", "js", "pyodide", "workers"}}

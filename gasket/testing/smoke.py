@@ -17,7 +17,8 @@ class SmokeBase:
         last = None
         for _ in range(max_attempts):
             last = self.request("GET", self._url(path), headers=self.default_headers)
-            if last.status_code in accept_statuses: return
+            if last.status_code in accept_statuses:
+                return
             time.sleep(interval_s)
         raise AssertionError(f"not ready: last status {getattr(last, 'status_code', None)}")
 
@@ -28,7 +29,8 @@ class SmokeBase:
         return resp
 
     def assert_all_load(self, paths: list[str], *, status: int = 200) -> None:
-        for path in paths: self.assert_status(path, status=status)
+        for path in paths:
+            self.assert_status(path, status=status)
 
     def assert_content_type(self, path: str, expected: str) -> None:
         resp = self.assert_status(path)

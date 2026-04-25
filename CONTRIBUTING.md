@@ -13,16 +13,19 @@ Gasket must stay generic:
 
 ## Local checks
 
+This project uses `uv`.
+
 ```bash
-python3 -m compileall -q gasket
-python3 -m gasket.cli doctor
+uv sync --group dev
+uv run python -m compileall -q gasket
+uv run gasket doctor
+uv run pytest
 ```
 
-If optional development tools are installed, also run:
+If you are changing style-sensitive code, also run:
 
 ```bash
-ruff check .
-pytest
+uv run ruff check .
 ```
 
 ## Documentation

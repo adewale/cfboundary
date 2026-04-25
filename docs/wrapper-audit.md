@@ -18,7 +18,7 @@ The original `gasket.md` correctly identified the highest-value reusable pieces:
 
 1. **Single boundary module.** Both applications benefited from concentrating Pyodide weirdness in one place.
 2. **Conversion in both directions.** The wrappers correctly treat FFI as a write problem and a read problem.
-3. **D1 null handling.** Python `None` must become JS `null`, not JS `undefined`, for D1 binds.
+3. **D1 null handling.** Python `None` must become `pyodide.ffi.jsnull`, not JS `undefined`, for D1 binds. JavaScript `undefined` arrives in Python as `None`.
 4. **Dict conversion to plain JS objects.** `to_js(..., dict_converter=Object.fromEntries)` avoids Map/LiteralMap surprises.
 5. **CPython fallback.** Import guards make business logic importable in tests.
 6. **ReadableStream caution.** Reading with `getReader()` avoids truncated multi-chunk streams.

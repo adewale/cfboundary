@@ -7,6 +7,7 @@ All notable changes to gasket are documented here.
 ### Added
 
 - Generic Cloudflare Python Workers FFI boundary helpers.
+- Correct Pyodide null handling via `pyodide.ffi.jsnull`; JavaScript `undefined` is treated as Python `None`.
 - Binding-name-agnostic `SafeEnv` with wrappers for D1, R2, KV, Queues, Workers AI, Vectorize, service bindings, Durable Objects, Analytics Engine, Cache API, Fetcher/service bindings, and Static Assets.
 - Response, stream, and scheduled-event adapters.
 - CPython/Pyodide test fakes and smoke-test helpers.
