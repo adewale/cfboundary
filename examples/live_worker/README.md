@@ -18,7 +18,9 @@ Do not commit Cloudflare API tokens, `.dev.vars`, `.env` files, generated Wrangl
 - `.dev.vars*`
 - `.env*`
 - `.wrangler/`
+- `.venv-workers/`
 - `node_modules/`
+- `python_modules/`
 - `examples/live_worker/wrangler.deploy.jsonc`
 - `examples/live_worker/src/gasket/`
 
@@ -63,7 +65,7 @@ npx wrangler d1 migrations apply gasket-live-worker-db --remote --config wrangle
 ## Deploy
 
 ```bash
-npx wrangler deploy --config wrangler.deploy.jsonc
+uv run --group workers pywrangler deploy --config wrangler.deploy.jsonc
 ```
 
 ## Run E2E tests

@@ -17,7 +17,8 @@ pytestmark = pytest.mark.skipif(
 
 def _get(path: str) -> tuple[int, str, dict[str, str]]:
     url = BASE_URL.rstrip("/") + path
-    with urllib.request.urlopen(url, timeout=20) as response:
+    request = urllib.request.Request(url, headers={"User-Agent": "gasket-live-e2e/1.0"})
+    with urllib.request.urlopen(request, timeout=20) as response:
         return response.status, response.read().decode("utf-8"), dict(response.headers)
 
 
