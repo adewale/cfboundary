@@ -2,6 +2,17 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.4 - 2026-04-26
+
+### Added
+
+- Added `cfboundary.ffi.configure_runtime()` so app compatibility layers and tests can inject Pyodide/fake runtime globals before delegating to CFBoundary.
+
+### Changed
+
+- Improved fake-runtime null/undefined detection for app migration tests.
+- Supported legacy Pyodide fake `to_js()` adapters that do not accept `create_pyproxies`.
+
 ## 0.1.0 - 2026-04-25
 
 ### Added
