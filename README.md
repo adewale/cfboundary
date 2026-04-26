@@ -72,7 +72,7 @@ CFBoundary is pre-1.0. During early development, pin a tag or local path from ap
 # pyproject.toml
 [project]
 dependencies = [
-    "cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.0",
+    "cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.7",
 ]
 ```
 
