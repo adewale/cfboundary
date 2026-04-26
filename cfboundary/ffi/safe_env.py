@@ -78,8 +78,8 @@ def is_js_null(value: Any) -> bool:
     """
     if value is None:
         return False
-    if HAS_PYODIDE and jsnull is not None:
-        return value is jsnull
+    if HAS_PYODIDE and jsnull is not None and value is jsnull:
+        return True
     return type(value).__name__ == "JsNull"
 
 
@@ -88,7 +88,14 @@ def is_js_missing(value: Any) -> bool:
 
     JS undefined is represented as Python ``None`` by Pyodide.
     """
-    return value is None or is_js_null(value)
+    if value is None or is_js_null(value):
+        return True
+    if HAS_PYODIDE and js is not None:
+        try:
+            return value is js.undefined
+        except AttributeError:
+            return False
+    return False
 
 
 def d1_null(value: Any = None) -> Any:
