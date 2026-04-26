@@ -11,12 +11,16 @@ from cfboundary.ffi.safe_env import HAS_PYODIDE, _headers_to_dict, to_js
 
 try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     from js import fetch as js_fetch  # type: ignore[import-not-found]
-except ImportError:
+except ModuleNotFoundError as exc:
+    if exc.name != "js":
+        raise
     js_fetch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - absence is covered by monkeypatching httpx to None
     import httpx
-except ImportError:  # pragma: no cover
+except ModuleNotFoundError as exc:  # pragma: no cover
+    if exc.name != "httpx":
+        raise
     httpx = None  # type: ignore[assignment]
 
 

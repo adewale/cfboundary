@@ -2,6 +2,12 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.5 - 2026-04-26
+
+### Changed
+
+- Tightened optional runtime imports to catch only missing optional top-level modules, avoiding accidental masking of broken transitive imports.
+
 ## 0.1.4 - 2026-04-26
 
 ### Added

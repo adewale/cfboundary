@@ -21,7 +21,9 @@ try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     )
 
     HAS_PYODIDE = True
-except ImportError:
+except ModuleNotFoundError as exc:
+    if exc.name not in {"js", "pyodide"}:
+        raise
     js = None  # type: ignore[assignment]
     JsProxy = None  # type: ignore[assignment,misc]
     jsnull = None  # type: ignore[assignment]
