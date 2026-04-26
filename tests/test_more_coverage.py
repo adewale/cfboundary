@@ -5,12 +5,12 @@ from types import SimpleNamespace
 
 import pytest
 
-import gasket.ffi.primitives as primitives
-from gasket.adapters import response as response_mod
-from gasket.adapters import streams as streams_mod
-from gasket.deploy.verifier import SmokeBase as VerifierSmokeBase
-from gasket.ffi import SafeEnv, consume_readable_stream, get_r2_size, stream_r2_body, to_js_bytes, to_py_bytes
-from gasket.testing.fakes import FakeJsModule, patch_pyodide_runtime
+import cfboundary.ffi.primitives as primitives
+from cfboundary.adapters import response as response_mod
+from cfboundary.adapters import streams as streams_mod
+from cfboundary.deploy.verifier import SmokeBase as VerifierSmokeBase
+from cfboundary.ffi import SafeEnv, consume_readable_stream, get_r2_size, stream_r2_body, to_js_bytes, to_py_bytes
+from cfboundary.testing.fakes import FakeJsModule, patch_pyodide_runtime
 
 
 def run(coro):

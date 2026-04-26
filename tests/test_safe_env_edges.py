@@ -5,8 +5,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from gasket.ffi import SafeAI, SafeD1, SafeKV, SafeQueue, SafeR2, SafeService, SafeVectorize
-from gasket.ffi.safe_env import SafeR2Object, _headers_to_dict, _to_py_safe, d1_rows, to_py, to_py_bytes
+from cfboundary.ffi import SafeAI, SafeD1, SafeKV, SafeQueue, SafeR2, SafeService, SafeVectorize
+from cfboundary.ffi.safe_env import SafeR2Object, _headers_to_dict, _to_py_safe, d1_rows, to_py, to_py_bytes
 
 
 def run(coro):
@@ -117,7 +117,7 @@ def test_safe_env_returns_existing_wrappers_and_missing_none() -> None:
         V=SafeVectorize(object()),
         S=SafeService(object()),
     )
-    from gasket.ffi import SafeEnv
+    from cfboundary.ffi import SafeEnv
 
     env = SafeEnv(raw)
     assert env.d1("D1") is raw.D1
@@ -150,7 +150,7 @@ def test_assets_and_headers_to_dict() -> None:
         async def fetch(self, request):
             return f"asset:{request}"
 
-    from gasket.ffi import SafeAssets
+    from cfboundary.ffi import SafeAssets
 
     assert run(SafeAssets(Assets()).fetch("req")) == "asset:req"
     assert _headers_to_dict(None) == {}

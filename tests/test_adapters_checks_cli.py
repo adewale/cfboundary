@@ -5,18 +5,18 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 
-from gasket.adapters.response import full_response
-from gasket.adapters.scheduled import ScheduledHandler
-from gasket.adapters.streams import serve_r2_object_via_js
-from gasket.checks import (
+from cfboundary.adapters.response import full_response
+from cfboundary.adapters.scheduled import ScheduledHandler
+from cfboundary.adapters.streams import serve_r2_object_via_js
+from cfboundary.checks import (
     check_ffi_boundary,
     check_handler_consistency,
     check_pyodide_pitfalls,
     check_vendor,
 )
-from gasket.cli import main
-from gasket.deploy import plan_deploy, validate_ready
-from gasket.testing.smoke import SmokeBase
+from cfboundary.cli import main
+from cfboundary.deploy import plan_deploy, validate_ready
+from cfboundary.testing.smoke import SmokeBase
 
 
 def run(coro):
@@ -117,4 +117,4 @@ def test_smoke_base_helpers() -> None:
 
 
 def test_e2e_tests_are_skipped_by_default() -> None:
-    assert "GASKET_E2E_BASE_URL" not in os.environ or os.environ["GASKET_E2E_BASE_URL"]
+    assert "CFBOUNDARY_E2E_BASE_URL" not in os.environ or os.environ["CFBOUNDARY_E2E_BASE_URL"]

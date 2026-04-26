@@ -1,10 +1,10 @@
 # Cloudflare Developer Platform Surface Audit
 
-Gasket's scope is the Python/JavaScript FFI boundary for Cloudflare Python Workers. It does not replace Wrangler, framework routing, auth, app models, or product-specific provisioning.
+CFBoundary's scope is the Python/JavaScript FFI boundary for Cloudflare Python Workers. It does not replace Wrangler, framework routing, auth, app models, or product-specific provisioning.
 
 ## Covered directly
 
-| Cloudflare surface | Gasket abstraction | Notes |
+| Cloudflare surface | CFBoundary abstraction | Notes |
 |---|---|---|
 | Environment vars/secrets | `SafeEnv.var()`, `SafeEnv.secret()` | Converts null/undefined and enforces required secrets. |
 | D1 | `SafeD1`, `SafeD1Statement` | Covers `prepare`, `bind`, `first`, `all`, `run`, `exec`, `batch`; converts `None` to JS `null`. |
@@ -18,20 +18,20 @@ Gasket's scope is the Python/JavaScript FFI boundary for Cloudflare Python Worke
 | Analytics Engine | `SafeAnalyticsEngine` | Covers `writeDataPoint`. |
 | Cache API | `SafeCache` | Covers `match`, `put`, `delete`. |
 | Static Assets binding | `SafeAssets` | Covers `fetch`. |
-| Scheduled events | `gasket.adapters.scheduled` | Normalizes scheduled event metadata and wraps env. |
-| Responses | `gasket.adapters.response.full_response` | Avoids ASGI StreamingResponse truncation for fully-buffered responses. |
-| Large R2 streaming | `gasket.adapters.streams.serve_r2_object_via_js` | Keeps large payloads on the JS side. |
-| HTTP fetch | `gasket.http.fetch`, `FetchResponse` | Normalizes Workers `fetch` and CPython `httpx` for tests/tools. |
-| Runtime probes | `gasket.compat.probes` | Detects Pyodide/Workers restrictions. |
-| Local testing | `gasket.testing.fakes`, `gasket.testing.smoke` | Tests production branches from CPython and validates deployed workers. |
+| Scheduled events | `cfboundary.adapters.scheduled` | Normalizes scheduled event metadata and wraps env. |
+| Responses | `cfboundary.adapters.response.full_response` | Avoids ASGI StreamingResponse truncation for fully-buffered responses. |
+| Large R2 streaming | `cfboundary.adapters.streams.serve_r2_object_via_js` | Keeps large payloads on the JS side. |
+| HTTP fetch | `cfboundary.http.fetch`, `FetchResponse` | Normalizes Workers `fetch` and CPython `httpx` for tests/tools. |
+| Runtime probes | `cfboundary.compat.probes` | Detects Pyodide/Workers restrictions. |
+| Local testing | `cfboundary.testing.fakes`, `cfboundary.testing.smoke` | Tests production branches from CPython and validates deployed workers. |
 
 ## Intentionally not abstracted
 
 - Routing/framework APIs (`fetch`, FastAPI, itty-router style dispatch): app-specific.
 - Authentication/session strategy: app-specific.
 - Wrangler project generation, multi-instance provisioning, and DNS: app/product-specific.
-- D1 schema management policy: gasket validates readiness but does not decide migration ordering for an app.
-- Browser Rendering, Workflows, Hyperdrive, Images, Turnstile, Email Routing, Pub/Sub, and Calls: these either do not have stable Python Workers bindings in the source projects or require product-specific semantics. Gasket can add wrappers once a source app proves a reusable boundary pattern.
+- D1 schema management policy: cfboundary validates readiness but does not decide migration ordering for an app.
+- Browser Rendering, Workflows, Hyperdrive, Images, Turnstile, Email Routing, Pub/Sub, and Calls: these either do not have stable Python Workers bindings in the source projects or require product-specific semantics. CFBoundary can add wrappers once a source app proves a reusable boundary pattern.
 
 ## Missing abstractions identified and added in this pass
 
@@ -41,7 +41,7 @@ Gasket's scope is the Python/JavaScript FFI boundary for Cloudflare Python Worke
 - Generic Analytics Engine writer.
 - Generic Cache API wrapper.
 - Generic Static Assets wrapper.
-- Binding-name-agnostic `SafeEnv`; app-specific binding names now live in application shims, not gasket.
+- Binding-name-agnostic `SafeEnv`; app-specific binding names now live in application shims, not cfboundary.
 
 ## Remaining follow-up candidates
 

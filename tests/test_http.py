@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gasket.http import FetchError, FetchResponse, fetch
+from cfboundary.http import FetchError, FetchResponse, fetch
 
 
 def run(coro):
@@ -66,7 +66,7 @@ def test_fetch_cpython_form_body_and_redirect_option() -> None:
 
 
 def test_fetch_pyodide_without_body_and_cpython_missing_httpx(monkeypatch) -> None:
-    import gasket.http as http
+    import cfboundary.http as http
 
     class Headers:
         def entries(self):

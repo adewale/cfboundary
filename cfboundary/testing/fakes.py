@@ -39,7 +39,7 @@ class FakeJsModule:
 
 @contextmanager
 def patch_pyodide_runtime(*, with_module: FakeJsModule | None = None):
-    import gasket.ffi.safe_env as target
+    import cfboundary.ffi.safe_env as target
 
     fake_jsnull = JsNull()
     old = (target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target._pyodide_to_js)

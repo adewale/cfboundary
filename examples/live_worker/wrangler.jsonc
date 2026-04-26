@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gasket-live-worker",
+  "name": "cfboundary-live-worker",
   "main": "src/entry.py",
   "compatibility_date": "2026-04-25",
   "compatibility_flags": ["python_workers"],
@@ -8,14 +8,14 @@
   "d1_databases": [
     {
       "binding": "DATABASE",
-      "database_name": "gasket-live-worker-db",
+      "database_name": "cfboundary-live-worker-db",
       "database_id": "REPLACE_WITH_D1_DATABASE_ID"
     }
   ],
   "r2_buckets": [
     {
       "binding": "OBJECTS",
-      "bucket_name": "gasket-live-worker-objects"
+      "bucket_name": "cfboundary-live-worker-objects"
     }
   ],
   "kv_namespaces": [

@@ -3,14 +3,14 @@ import re
 from pathlib import Path
 from .common import Finding
 
-_PATTERNS = [(re.compile(r"\bimport js\b|from js import"), "GSK001", "direct js import outside boundary"), (re.compile(r"from pyodide\.ffi import .*to_js|\bto_js\("), "GSK002", "direct to_js use; route through gasket"), (re.compile(r"\.to_py\("), "GSK003", "direct JsProxy conversion; route through gasket")]
+_PATTERNS = [(re.compile(r"\bimport js\b|from js import"), "GSK001", "direct js import outside boundary"), (re.compile(r"from pyodide\.ffi import .*to_js|\bto_js\("), "GSK002", "direct to_js use; route through cfboundary"), (re.compile(r"\.to_py\("), "GSK003", "direct JsProxy conversion; route through cfboundary")]
 
 def check_ffi_boundary(paths: list[Path]) -> list[Finding]:
     findings: list[Finding] = []
     for root in paths:
         files = [root] if root.is_file() else list(root.rglob("*.py"))
         for path in files:
-            if "gasket/ffi" in path.as_posix():
+            if "cfboundary/ffi" in path.as_posix():
                 continue
             try:
                 lines = path.read_text().splitlines()

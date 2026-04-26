@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 from urllib.parse import urlencode
 
-from gasket.ffi.safe_env import HAS_PYODIDE, _headers_to_dict, to_js
+from cfboundary.ffi.safe_env import HAS_PYODIDE, _headers_to_dict, to_js
 
 try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     from js import fetch as js_fetch  # type: ignore[import-not-found]
@@ -95,7 +95,7 @@ async def fetch(
         )
 
     if httpx is None:
-        raise RuntimeError("httpx is required for gasket.http.fetch outside Pyodide")
+        raise RuntimeError("httpx is required for cfboundary.http.fetch outside Pyodide")
     try:
         async with httpx.AsyncClient(follow_redirects=follow_redirects, timeout=timeout) as client:
             response = await client.request(method, url, headers=request_headers, content=body)

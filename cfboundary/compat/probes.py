@@ -3,7 +3,7 @@ import importlib
 
 async def probe_eval_blocked() -> bool:
     try:
-        from gasket.ffi.safe_env import js
+        from cfboundary.ffi.safe_env import js
         js.eval("1+1")
         return False
     except Exception:
@@ -11,7 +11,7 @@ async def probe_eval_blocked() -> bool:
 
 async def probe_function_constructor_blocked() -> bool:
     try:
-        from gasket.ffi.safe_env import js
+        from cfboundary.ffi.safe_env import js
         js.Function("return 1")()
         return False
     except Exception:

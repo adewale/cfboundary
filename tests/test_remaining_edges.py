@@ -5,10 +5,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from gasket.adapters.scheduled import ScheduledHandler
-from gasket.http import fetch
-from gasket.testing.fakes import FakeJsProxy, FakeJsModule
-from gasket.testing.smoke import SmokeBase
+from cfboundary.adapters.scheduled import ScheduledHandler
+from cfboundary.http import fetch
+from cfboundary.testing.fakes import FakeJsProxy, FakeJsModule
+from cfboundary.testing.smoke import SmokeBase
 
 
 def run(coro):
@@ -57,7 +57,7 @@ def test_smoke_failure_paths() -> None:
 
 
 def test_http_pyodide_fetch_branch(monkeypatch) -> None:
-    import gasket.http as http
+    import cfboundary.http as http
 
     class Headers:
         def __init__(self):

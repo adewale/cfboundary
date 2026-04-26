@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from gasket.ffi import HAS_PYODIDE, SafeEnv, is_js_missing, to_js
-from gasket.ffi.safe_env import js
+from cfboundary.ffi import HAS_PYODIDE, SafeEnv, is_js_missing, to_js
+from cfboundary.ffi.safe_env import js
 
 
 async def serve_r2_object_via_js(

@@ -5,9 +5,9 @@ import importlib
 from hypothesis import given
 from hypothesis import strategies as st
 
-import gasket.ffi as ffi
-from gasket.ffi import R2ListResult, SafeVectorize, is_js_missing, is_js_null, js_null, to_js, to_py
-from gasket.testing.fakes import patch_pyodide_runtime
+import cfboundary.ffi as ffi
+from cfboundary.ffi import R2ListResult, SafeVectorize, is_js_missing, is_js_null, js_null, to_js, to_py
+from cfboundary.testing.fakes import patch_pyodide_runtime
 
 json_scalars = st.none() | st.booleans() | st.integers() | st.floats(allow_nan=False) | st.text()
 json_values = st.recursive(
@@ -58,7 +58,7 @@ def test_to_js_is_identity_in_cpython(value) -> None:
     )
 )
 def test_d1_null_only_changes_none(value) -> None:
-    from gasket.ffi import d1_null
+    from cfboundary.ffi import d1_null
 
     if value is not None:
         assert d1_null(value) == value
@@ -96,5 +96,5 @@ def test_vectorize_uses_pythonic_delete_by_ids() -> None:
 
 
 def test_result_aliases_are_available_for_pythonic_docs() -> None:
-    safe_env = importlib.import_module("gasket.ffi.safe_env")
+    safe_env = importlib.import_module("cfboundary.ffi.safe_env")
     assert safe_env.R2ListResult is R2ListResult

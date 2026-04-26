@@ -1,14 +1,14 @@
 # Compatibility test matrix
 
-Gasket should be tested against both sides of the Cloudflare Python Workers boundary.
+CFBoundary should be tested against both sides of the Cloudflare Python Workers boundary.
 
 ## Runtime modes
 
 | Mode | Purpose | How |
 |---|---|---|
-| CPython fallback | Ensures gasket and applications import and run in normal local tests. | `uv run pytest` without Pyodide modules. |
-| Pyodide fake | Exercises the production branches that use `js`, `pyodide.ffi.JsProxy`, `pyodide.ffi.jsnull`, and `to_js`. | `gasket.testing.fakes.patch_pyodide_runtime()`. |
-| Deployed Worker smoke | Catches platform behavior that mocks cannot model. | `GASKET_E2E_BASE_URL=... uv run pytest tests/e2e` plus application-specific smoke tests composed with `gasket.testing.smoke.SmokeBase`. |
+| CPython fallback | Ensures cfboundary and applications import and run in normal local tests. | `uv run pytest` without Pyodide modules. |
+| Pyodide fake | Exercises the production branches that use `js`, `pyodide.ffi.JsProxy`, `pyodide.ffi.jsnull`, and `to_js`. | `cfboundary.testing.fakes.patch_pyodide_runtime()`. |
+| Deployed Worker smoke | Catches platform behavior that mocks cannot model. | `CFBOUNDARY_E2E_BASE_URL=... uv run pytest tests/e2e` plus application-specific smoke tests composed with `cfboundary.testing.smoke.SmokeBase`. |
 
 ## Boundary semantics to lock down
 
@@ -39,13 +39,13 @@ Every binding wrapper should have CPython and Pyodide-fake coverage for its conv
 
 ## Application migration matrix
 
-Applications should run their existing test suites in addition to gasket's suite:
+Applications should run their existing test suites in addition to cfboundary's suite:
 
 | Application state | Required check |
 |---|---|
 | Existing local wrapper retained | Full app tests must pass unchanged. |
-| Generic helper delegated to gasket | Existing app tests plus gasket tests pass. |
-| Call site migrated to direct gasket import | App tests pass and no app-specific names were added to gasket. |
-| Deployment scripts composed with gasket | Dry-run/validation tests pass before live deploy. |
+| Generic helper delegated to cfboundary | Existing app tests plus cfboundary tests pass. |
+| Call site migrated to direct cfboundary import | App tests pass and no app-specific names were added to cfboundary. |
+| Deployment scripts composed with cfboundary | Dry-run/validation tests pass before live deploy. |
 
 This matrix is intentionally stricter than unit tests alone because CPython-only tests can miss Pyodide production branch bugs.

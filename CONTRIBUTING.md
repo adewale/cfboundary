@@ -1,10 +1,10 @@
 # Contributing
 
-Thanks for considering a contribution to gasket.
+Thanks for considering a contribution to cfboundary.
 
 ## Design rules
 
-Gasket must stay generic:
+CFBoundary must stay generic:
 
 - Do not add application-specific binding names such as `DB`, `CONTENT`, or `SEARCH_INDEX` to the library surface.
 - Do not add product-specific row factories, route helpers, auth/session code, feed/article/theme logic, or deployment topology.
@@ -17,8 +17,8 @@ This project uses `uv`.
 
 ```bash
 uv sync --group dev
-uv run python -m compileall -q gasket
-uv run gasket doctor
+uv run python -m compileall -q cfboundary
+uv run cfboundary doctor
 uv run pytest
 ```
 

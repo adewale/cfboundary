@@ -1,12 +1,12 @@
 name: Feature request
-description: Suggest a generic Gasket feature
+description: Suggest a generic CFBoundary feature
 title: "feature: "
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Gasket intentionally stays generic. Please do not request app-specific binding names, routes, row factories, auth/session/feed/theme logic, or deployment topology.
+        CFBoundary intentionally stays generic. Please do not request app-specific binding names, routes, row factories, auth/session/feed/theme logic, or deployment topology.
   - type: textarea
     id: problem
     attributes:

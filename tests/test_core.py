@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from gasket.ffi import SafeEnv, d1_null, is_js_missing, is_js_null, js_null, to_py
-from gasket.testing.fakes import FakeJsProxy, patch_pyodide_runtime
+from cfboundary.ffi import SafeEnv, d1_null, is_js_missing, is_js_null, js_null, to_py
+from cfboundary.testing.fakes import FakeJsProxy, patch_pyodide_runtime
 
 
 def test_safe_env_is_binding_name_agnostic() -> None:

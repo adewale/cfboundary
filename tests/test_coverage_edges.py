@@ -4,9 +4,9 @@ import os
 import time
 from pathlib import Path
 
-from gasket.checks import check_ffi_boundary, check_pyodide_pitfalls, check_vendor
-from gasket.cli import main
-from gasket.deploy import validate_ready
+from cfboundary.checks import check_ffi_boundary, check_pyodide_pitfalls, check_vendor
+from cfboundary.cli import main
+from cfboundary.deploy import validate_ready
 
 
 def test_check_file_inputs_and_unicode_errors(tmp_path: Path) -> None:
@@ -19,7 +19,7 @@ def test_check_file_inputs_and_unicode_errors(tmp_path: Path) -> None:
     assert check_ffi_boundary([bad]) == []
     assert check_pyodide_pitfalls([bad]) == []
 
-    internal = tmp_path / "gasket" / "ffi" / "internal.py"
+    internal = tmp_path / "cfboundary" / "ffi" / "internal.py"
     internal.parent.mkdir(parents=True)
     internal.write_text("import js\n")
     assert check_ffi_boundary([tmp_path]) == [check_ffi_boundary([file_path])[0]]
@@ -82,5 +82,5 @@ def test_cli_check_paths(tmp_path: Path, capsys, monkeypatch) -> None:
 
 def test_cli_module_main_subprocess() -> None:
     # Main callable is covered directly; this assertion keeps the test lightweight
-    # while documenting that `python -m gasket.cli doctor` is the intended module path.
+    # while documenting that `python -m cfboundary.cli doctor` is the intended module path.
     assert callable(main)

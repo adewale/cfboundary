@@ -1,12 +1,12 @@
 # Pre-release checklist execution: 2026-04-25
 
-This records execution of `docs/pre-release-checklist.md` for the current pre-GitHub Gasket state.
+This records execution of `docs/pre-release-checklist.md` for the current pre-GitHub CFBoundary state.
 
 ## Summary
 
-Verdict: **ready for GitHub project creation after choosing a package publishing name strategy**.
+Verdict: **ready for GitHub project creation**.
 
-All code, package, live E2E, and consumer regression checks passed. No tracked secrets were found. The only release-planning blocker discovered is that the PyPI name `gasket` is already occupied by an unrelated historical package, so PyPI publication should use a different distribution name unless ownership is resolved.
+All code, package, live E2E, and consumer regression checks passed. No tracked secrets were found. The PyPI names `cfboundary` and `cf-boundary` both returned 404 at check time, so the chosen project name is available for package publication.
 
 ## Commands and results
 
@@ -15,18 +15,18 @@ All code, package, live E2E, and consumer regression checks passed. No tracked s
 Generated artifacts were removed after validation:
 
 ```bash
-rm -f gasket/.coverage
-rm -rf gasket/.pytest_cache gasket/.ruff_cache gasket/.hypothesis gasket/.venv gasket/dist
-rm -rf gasket/examples/live_worker/.venv-workers gasket/examples/live_worker/.venv gasket/examples/live_worker/.wrangler
-rm -rf gasket/examples/live_worker/python_modules gasket/examples/live_worker/src/gasket
-rm -f gasket/examples/live_worker/wrangler.deploy.jsonc
-find gasket tasche planet_cf -type d -name __pycache__ -prune -exec rm -rf {} +
+rm -f cfboundary/.coverage
+rm -rf cfboundary/.pytest_cache cfboundary/.ruff_cache cfboundary/.hypothesis cfboundary/.venv cfboundary/dist
+rm -rf cfboundary/examples/live_worker/.venv-workers cfboundary/examples/live_worker/.venv cfboundary/examples/live_worker/.wrangler
+rm -rf cfboundary/examples/live_worker/python_modules cfboundary/examples/live_worker/src/cfboundary
+rm -f cfboundary/examples/live_worker/wrangler.deploy.jsonc
+find cfboundary tasche planet_cf -type d -name __pycache__ -prune -exec rm -rf {} +
 ```
 
 ### Secret scan
 
 ```bash
-cd gasket
+cd cfboundary
 uvx detect-secrets scan --all-files
 ```
 
@@ -41,13 +41,13 @@ Targeted grep also found no real secrets. Matches were documentation/API terms s
 ### Static checks, tests, package build
 
 ```bash
-cd gasket
+cd cfboundary
 uv run ruff check .
-uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
-uv run python -m compileall -q gasket
+uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
+uv run python -m compileall -q cfboundary
 uv build
 uvx twine check dist/*
-uvx vulture gasket tests --min-confidence 80
+uvx vulture cfboundary tests --min-confidence 80
 ```
 
 Results:
@@ -65,8 +65,8 @@ vulture: no production findings
 The live Worker was already deployed at the configured Workers URL. The latest code path was verified with:
 
 ```bash
-cd gasket
-GASKET_E2E_BASE_URL=https://gasket-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
+cd cfboundary
+CFBOUNDARY_E2E_BASE_URL=https://cfboundary-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
 ```
 
 Result:
@@ -105,7 +105,7 @@ Known warnings:
 ### Documentation link check
 
 ```bash
-cd gasket
+cd cfboundary
 python - <<'PY'
 from pathlib import Path
 import re
@@ -140,27 +140,28 @@ broken_count 0
 
 ```bash
 python3 - <<'PY'
-import json, urllib.request
-j=json.load(urllib.request.urlopen('https://pypi.org/pypi/gasket/json',timeout=10))
-print(j['info'].get('summary'))
-print(j['info'].get('version'))
-print(j['info'].get('home_page'))
+import urllib.request, urllib.error
+for name in ['cfboundary', 'cf-boundary']:
+    try:
+        with urllib.request.urlopen(f'https://pypi.org/pypi/{name}/json', timeout=10) as r:
+            print(name, 'TAKEN', r.status)
+    except urllib.error.HTTPError as e:
+        print(name, 'AVAILABLE' if e.code == 404 else f'HTTP {e.code}')
 PY
 ```
 
 Result:
 
 ```text
-Simple note taking aplication for gnome
-0.1
-http://joey101.net/gasket/
+cfboundary AVAILABLE
+cf-boundary AVAILABLE
 ```
 
-Implication: GitHub repo name `gasket` is fine, but PyPI publication needs a name strategy such as `gasket-workers` or `cloudflare-gasket`, unless the existing PyPI project can be transferred.
+Implication: the chosen package name is available at the time of this check.
 
 ### Dependency audit note
 
-A requirements-based `pip-audit` attempt failed because the audit tool's temporary Python 3.13 virtualenv hit an `ensurepip` crash in this local environment. A previous environment-level audit only reported a vulnerability in ambient `pip`, not a declared Gasket runtime dependency.
+A requirements-based `pip-audit` attempt failed because the audit tool's temporary Python 3.13 virtualenv hit an `ensurepip` crash in this local environment. A previous environment-level audit only reported a vulnerability in ambient `pip`, not a declared CFBoundary runtime dependency.
 
 For release, run dependency audit again in CI or a clean local environment against the exported runtime requirements.
 
@@ -183,8 +184,8 @@ For release, run dependency audit again in CI or a clean local environment again
 - [x] GitHub issue/PR templates added.
 - [x] Code of conduct added.
 - [x] PyPI name availability checked.
-- [ ] PyPI package name strategy decided.
+- [x] PyPI package name strategy decided: `cfboundary`.
 
 ## Recommendation
 
-Create the GitHub project now, keeping the project explicitly pre-1.0. Before publishing to PyPI, choose a distribution name that does not collide with the existing `gasket` package.
+Create the GitHub project now, keeping the project explicitly pre-1.0. The selected PyPI distribution/import package name is `cfboundary`.

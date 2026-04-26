@@ -6,18 +6,18 @@ import urllib.request
 import pytest
 
 
-BASE_URL = os.environ.get("GASKET_E2E_BASE_URL")
+BASE_URL = os.environ.get("CFBOUNDARY_E2E_BASE_URL")
 
 
 pytestmark = pytest.mark.skipif(
     not BASE_URL,
-    reason="set GASKET_E2E_BASE_URL to a deployed gasket example Worker to run live E2E tests",
+    reason="set CFBOUNDARY_E2E_BASE_URL to a deployed cfboundary example Worker to run live E2E tests",
 )
 
 
 def _get(path: str) -> tuple[int, str, dict[str, str]]:
     url = BASE_URL.rstrip("/") + path
-    request = urllib.request.Request(url, headers={"User-Agent": "gasket-live-e2e/1.0"})
+    request = urllib.request.Request(url, headers={"User-Agent": "cfboundary-live-e2e/1.0"})
     with urllib.request.urlopen(request, timeout=20) as response:
         return response.status, response.read().decode("utf-8"), dict(response.headers)
 

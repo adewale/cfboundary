@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from types import SimpleNamespace
 
-from gasket.ffi import (
+from cfboundary.ffi import (
     SafeAI,
     SafeAnalyticsEngine,
     SafeCache,

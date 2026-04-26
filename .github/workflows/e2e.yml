@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: "Deployed gasket live Worker URL"
+        description: "Deployed cfboundary live Worker URL"
         required: true
         type: string
 
@@ -23,5 +23,5 @@ jobs:
         run: uv sync --group dev
       - name: Run live E2E tests
         env:
-          GASKET_E2E_BASE_URL: ${{ inputs.base_url }}
+          CFBOUNDARY_E2E_BASE_URL: ${{ inputs.base_url }}
         run: uv run pytest tests/e2e -q

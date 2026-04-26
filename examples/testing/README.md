@@ -1,8 +1,8 @@
 # Testing Pyodide branches from CPython
 
 ```python
-from gasket.ffi import d1_null, _to_py_safe
-from gasket.testing.fakes import FakeJsProxy, JsNull, patch_pyodide_runtime
+from cfboundary.ffi import d1_null, _to_py_safe
+from cfboundary.testing.fakes import FakeJsProxy, JsNull, patch_pyodide_runtime
 
 
 def test_js_null_converts_to_none():
@@ -16,7 +16,7 @@ Smoke helpers are HTTP-client agnostic:
 
 ```python
 import requests
-from gasket.testing.smoke import SmokeBase
+from cfboundary.testing.smoke import SmokeBase
 
 smoke = SmokeBase("https://example.workers.dev", requests.request)
 smoke.wait_for_ready("/api/health")

@@ -3,13 +3,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from gasket.checks import (
+from cfboundary.checks import (
     check_ffi_boundary,
     check_handler_consistency,
     check_pyodide_pitfalls,
     check_vendor,
 )
-from gasket.deploy import plan_deploy
+from cfboundary.deploy import plan_deploy
 
 
 def _print(findings):
@@ -18,7 +18,7 @@ def _print(findings):
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="gasket")
+    parser = argparse.ArgumentParser(prog="cfboundary")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_check = sub.add_parser("check")
@@ -32,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
     if args.cmd == "doctor":
-        from gasket.ffi.runtime import is_workers_runtime
+        from cfboundary.ffi.runtime import is_workers_runtime
 
         print(f"workers_runtime={is_workers_runtime()}")
         return 0

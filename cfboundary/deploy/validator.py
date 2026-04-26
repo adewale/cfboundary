@@ -4,8 +4,8 @@ import json
 import re
 from pathlib import Path
 
-from gasket.checks.common import Finding
-from gasket.checks.vendor import check_vendor
+from cfboundary.checks.common import Finding
+from cfboundary.checks.vendor import check_vendor
 
 
 def validate_ready(

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from gasket.checks.common import Finding
+from cfboundary.checks.common import Finding
 
 from .validator import validate_ready
 
@@ -12,7 +12,7 @@ from .validator import validate_ready
 class DeployPlan:
     """Result of generic deploy readiness planning.
 
-    Gasket does not run Wrangler or mutate Cloudflare resources. Applications
+    CFBoundary does not run Wrangler or mutate Cloudflare resources. Applications
     compose this generic plan with their own migration/deploy commands.
     """
 

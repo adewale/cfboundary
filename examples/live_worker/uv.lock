@@ -28,7 +28,7 @@ wheels = [
 ]
 
 [[package]]
-name = "gasket-live-worker"
+name = "cfboundary-live-worker"
 version = "0.1.0"
 source = { virtual = "." }
 

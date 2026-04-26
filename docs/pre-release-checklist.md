@@ -16,7 +16,7 @@ Use this checklist before publishing a GitHub release, creating a tag, or publis
   - `examples/live_worker/.venv-workers/`
   - `examples/live_worker/.wrangler/`
   - `examples/live_worker/python_modules/`
-  - `examples/live_worker/src/gasket/`
+  - `examples/live_worker/src/cfboundary/`
   - `examples/live_worker/wrangler.deploy.jsonc`
 - [ ] No generated deployment config or vendored Worker package is staged.
 
@@ -38,11 +38,11 @@ Expected result: no real secrets. Test fixture words such as `SECRET="s"` are ac
 
 ```bash
 uv run ruff check .
-uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
-uv run python -m compileall -q gasket
+uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
+uv run python -m compileall -q cfboundary
 uv build
 uvx twine check dist/*
-uvx vulture gasket tests --min-confidence 80
+uvx vulture cfboundary tests --min-confidence 80
 ```
 
 Expected result: all pass, 100% package line/branch coverage, no production dead-code findings.
@@ -53,10 +53,10 @@ Deploy the live Worker fixture using untracked generated config:
 
 ```bash
 cd examples/live_worker
-export GASKET_LIVE_D1_DATABASE_ID=<database_id>
-export GASKET_LIVE_KV_NAMESPACE_ID=<kv_namespace_id>
+export CFBOUNDARY_LIVE_D1_DATABASE_ID=<database_id>
+export CFBOUNDARY_LIVE_KV_NAMESPACE_ID=<kv_namespace_id>
 python3 scripts/prepare_deploy.py
-npx wrangler d1 migrations apply gasket-live-worker-db --remote --config wrangler.deploy.jsonc
+npx wrangler d1 migrations apply cfboundary-live-worker-db --remote --config wrangler.deploy.jsonc
 uv run --group workers pywrangler deploy --config wrangler.deploy.jsonc
 ```
 
@@ -64,7 +64,7 @@ Run E2E:
 
 ```bash
 cd ../..
-GASKET_E2E_BASE_URL=https://gasket-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
+CFBOUNDARY_E2E_BASE_URL=https://cfboundary-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
 ```
 
 Expected result: all live tests pass.
@@ -128,7 +128,7 @@ git push origin main --tags
 For a pre-1.0 release, release notes should say:
 
 - breaking changes are allowed before 1.0;
-- Gasket is generic boundary tooling, not an application framework;
+- CFBoundary is generic boundary tooling, not an application framework;
 - Tasche and Planet CF migrations remain incremental behind app-local wrappers;
 - live E2E was run against Cloudflare for D1/R2/KV/response/compat behavior.
 
@@ -138,7 +138,7 @@ Remove generated local deployment artifacts:
 
 ```bash
 rm -rf examples/live_worker/.venv examples/live_worker/.venv-workers examples/live_worker/.wrangler
-rm -rf examples/live_worker/python_modules examples/live_worker/src/gasket
+rm -rf examples/live_worker/python_modules examples/live_worker/src/cfboundary
 rm -f examples/live_worker/wrangler.deploy.jsonc .coverage
 ```
 

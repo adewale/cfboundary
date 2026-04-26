@@ -4,8 +4,8 @@ import asyncio
 import sys
 from types import SimpleNamespace
 
-from gasket.compat import probe_module_importable, run_all_probes
-from gasket.ffi.runtime import await_js, is_cold_start, is_workers_runtime
+from cfboundary.compat import probe_module_importable, run_all_probes
+from cfboundary.ffi.runtime import await_js, is_cold_start, is_workers_runtime
 
 
 def run(coro):
@@ -24,11 +24,11 @@ async def _awaitable(value):
 
 def test_compat_probes_module_importable() -> None:
     assert run(probe_module_importable("sys")) is True
-    assert run(probe_module_importable("definitely_missing_gasket_test_module")) is False
+    assert run(probe_module_importable("definitely_missing_cfboundary_test_module")) is False
 
 
 def test_compat_run_all_probes_without_js(monkeypatch) -> None:
-    import gasket.ffi.safe_env as safe_env
+    import cfboundary.ffi.safe_env as safe_env
 
     monkeypatch.setattr(safe_env, "js", SimpleNamespace(eval=lambda code: 1, Function=lambda code: lambda: 1))
     result = run(run_all_probes())

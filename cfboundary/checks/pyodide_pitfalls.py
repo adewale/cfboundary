@@ -11,7 +11,7 @@ _PATTERNS = [
     (
         re.compile(r"StreamingResponse"),
         "GSK012",
-        "StreamingResponse may truncate; use gasket.adapters.response.full_response",
+        "StreamingResponse may truncate; use cfboundary.adapters.response.full_response",
     ),
 ]
 

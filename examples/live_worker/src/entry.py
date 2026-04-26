@@ -1,6 +1,6 @@
-"""Deployable Worker used by Gasket live E2E tests.
+"""Deployable Worker used by CFBoundary live E2E tests.
 
-Before deploying, install gasket into this Worker project or copy the package into
+Before deploying, install cfboundary into this Worker project or copy the package into
 its module search path. The endpoints intentionally exercise real Cloudflare
 bindings instead of mocks.
 """
@@ -10,9 +10,9 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from gasket.adapters.response import full_response
-from gasket.compat import run_all_probes
-from gasket.ffi import SafeEnv
+from cfboundary.adapters.response import full_response
+from cfboundary.compat import run_all_probes
+from cfboundary.ffi import SafeEnv
 
 try:
     from workers import WorkerEntrypoint  # type: ignore[import-not-found]

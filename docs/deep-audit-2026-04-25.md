@@ -1,8 +1,8 @@
-# Deep audit: Gasket library and application impact
+# Deep audit: CFBoundary library and application impact
 
 Date: 2026-04-25
 
-Scope: the `gasket` package, examples, tests, documentation, and migration impact on the two current consumers: `tasche` and `planet_cf`.
+Scope: the `cfboundary` package, examples, tests, documentation, and migration impact on the two current consumers: `tasche` and `planet_cf`.
 
 Method: used the `adewale/audit-skill` audit skill and applied its deep-dive categories across code quality, docs-code sync, language best practices, resource management, test quality, feature completeness, security, and consumer integration impact.
 
@@ -10,17 +10,17 @@ Method: used the `adewale/audit-skill` audit skill and applied its deep-dive cat
 
 Verdict: **Minor findings only** after the fixes made during this audit.
 
-Gasket is credible for its current narrow purpose: generic Cloudflare Python Workers FFI and binding-boundary mechanics. The strongest evidence is the combination of real provenance from Tasche/Planet CF, 100% package line/branch coverage, property-based conversion tests, fake-Pyodide branch tests, a real deployable Cloudflare Worker fixture, and successful live E2E tests against Cloudflare D1/R2/KV.
+CFBoundary is credible for its current narrow purpose: generic Cloudflare Python Workers FFI and binding-boundary mechanics. The strongest evidence is the combination of real provenance from Tasche/Planet CF, 100% package line/branch coverage, property-based conversion tests, fake-Pyodide branch tests, a real deployable Cloudflare Worker fixture, and successful live E2E tests against Cloudflare D1/R2/KV.
 
-The remaining risks are adoption risks rather than evidence of a broken library: Tasche and Planet CF have not yet fully delegated their `wrappers.py` internals to Gasket, and live E2E does not yet cover every Cloudflare binding class.
+The remaining risks are adoption risks rather than evidence of a broken library: Tasche and Planet CF have not yet fully delegated their `wrappers.py` internals to CFBoundary, and live E2E does not yet cover every Cloudflare binding class.
 
 ## Validation performed
 
 ```text
-cd gasket && uv run ruff check .
-cd gasket && uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
-cd gasket && GASKET_E2E_BASE_URL=https://gasket-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
-cd gasket && uvx vulture gasket tests --min-confidence 80
+cd cfboundary && uv run ruff check .
+cd cfboundary && uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
+cd cfboundary && CFBOUNDARY_E2E_BASE_URL=https://cfboundary-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e -q
+cd cfboundary && uvx vulture cfboundary tests --min-confidence 80
 cd tasche && uv run --group test pytest -q
 cd planet_cf && uv run --all-extras pytest -q
 ```
@@ -28,10 +28,10 @@ cd planet_cf && uv run --all-extras pytest -q
 Results:
 
 ```text
-gasket ruff: pass
-gasket package coverage: 100% line, 100% branch; 70 passed, 5 skipped
-gasket live E2E: 5 passed against deployed Cloudflare Worker
-gasket vulture: no production findings after fixes
+cfboundary ruff: pass
+cfboundary package coverage: 100% line, 100% branch; 70 passed, 5 skipped
+cfboundary live E2E: 5 passed against deployed Cloudflare Worker
+cfboundary vulture: no production findings after fixes
 tasche: 1243 passed, 35 skipped, 2 warnings
 planet_cf: 1426 passed, 107 skipped, 1 RuntimeWarning
 ```
@@ -44,7 +44,7 @@ The Planet CF warning is the known un-awaited `AsyncMock` warning. Its reported 
 
 Severity: Medium
 
-Before this audit, `gasket.adapters.response.full_response()` always returned status 200 in CPython and constructed JS `Response` options with headers only. The live Worker attempted a 404 via a `Status` header, which is not how the Workers `Response` API sets status.
+Before this audit, `cfboundary.adapters.response.full_response()` always returned status 200 in CPython and constructed JS `Response` options with headers only. The live Worker attempted a 404 via a `Status` header, which is not how the Workers `Response` API sets status.
 
 Fix:
 
@@ -55,7 +55,7 @@ Fix:
 
 Files:
 
-- `gasket/adapters/response.py`
+- `cfboundary/adapters/response.py`
 - `examples/live_worker/src/entry.py`
 - `tests/test_adapters_checks_cli.py`
 
@@ -72,7 +72,7 @@ Fix:
 
 Files:
 
-- `gasket/ffi/safe_env.py`
+- `cfboundary/ffi/safe_env.py`
 - `tests/test_bindings.py`
 - `tests/test_safe_env_edges.py`
 
@@ -80,7 +80,7 @@ Files:
 
 Severity: Low/Medium
 
-`validate_ready()` accepted `required_secrets` but did nothing with it. Gasket cannot generically prove remote Worker secrets exist without Cloudflare API/application-specific checks, but silently ignoring the argument was misleading.
+`validate_ready()` accepted `required_secrets` but did nothing with it. CFBoundary cannot generically prove remote Worker secrets exist without Cloudflare API/application-specific checks, but silently ignoring the argument was misleading.
 
 Fix:
 
@@ -89,7 +89,7 @@ Fix:
 
 Files:
 
-- `gasket/deploy/validator.py`
+- `cfboundary/deploy/validator.py`
 - `tests/test_coverage_edges.py`
 
 ### 4. Test artifact with impossible branch
@@ -111,7 +111,7 @@ File:
 ### Strengths
 
 - The public package is small and focused.
-- App-specific concepts are absent from Gasket internals.
+- App-specific concepts are absent from CFBoundary internals.
 - The preferred public names are tested through export-surface tests.
 - The live Worker caught real deployment/tooling issues that CPython tests could not catch.
 
@@ -121,20 +121,20 @@ File:
 
 Severity: Low
 
-`gasket/ffi/safe_env.py` contains primitives, conversion helpers, D1, R2, KV, Queues, AI, Vectorize, services, Durable Objects, Analytics Engine, Cache, Assets, and Env wrappers in one module. It is well tested, but it is now the main maintenance risk because unrelated binding changes touch the same file.
+`cfboundary/ffi/safe_env.py` contains primitives, conversion helpers, D1, R2, KV, Queues, AI, Vectorize, services, Durable Objects, Analytics Engine, Cache, Assets, and Env wrappers in one module. It is well tested, but it is now the main maintenance risk because unrelated binding changes touch the same file.
 
 Recommendation:
 
 Split gradually without changing public exports:
 
-- `gasket/ffi/primitives.py`
-- `gasket/ffi/conversion.py`
-- `gasket/bindings/d1.py`
-- `gasket/bindings/r2.py`
-- `gasket/bindings/kv.py`
-- `gasket/bindings/queues.py`
-- `gasket/bindings/vectorize.py`
-- keep `gasket.ffi.__all__` as the compatibility export surface.
+- `cfboundary/ffi/primitives.py`
+- `cfboundary/ffi/conversion.py`
+- `cfboundary/bindings/d1.py`
+- `cfboundary/bindings/r2.py`
+- `cfboundary/bindings/kv.py`
+- `cfboundary/bindings/queues.py`
+- `cfboundary/bindings/vectorize.py`
+- keep `cfboundary.ffi.__all__` as the compatibility export surface.
 
 #### Some wrapper methods return `None` for missing required bindings
 
@@ -232,7 +232,7 @@ The live Worker does not yet verify Queues, AI, Vectorize, Durable Objects, Cach
 
 Recommendation:
 
-Add live fixtures opportunistically as the two applications actually depend on those bindings through Gasket.
+Add live fixtures opportunistically as the two applications actually depend on those bindings through CFBoundary.
 
 ## Feature completeness audit
 
@@ -246,7 +246,7 @@ Add live fixtures opportunistically as the two applications actually depend on t
 
 ### Not yet complete by design
 
-- No app-specific wrapper migration in Gasket itself.
+- No app-specific wrapper migration in CFBoundary itself.
 - No generic deploy orchestration that mutates Cloudflare resources; `plan_deploy()` is intentionally a planning API.
 - No broad framework routing/auth/session abstractions.
 
@@ -254,7 +254,7 @@ Add live fixtures opportunistically as the two applications actually depend on t
 
 ### Secrets
 
-No Cloudflare API token, OAuth token, `.env`, `.dev.vars`, generated deployment config, D1 ID, or KV namespace ID is tracked in the Gasket repo after cleanup.
+No Cloudflare API token, OAuth token, `.env`, `.dev.vars`, generated deployment config, D1 ID, or KV namespace ID is tracked in the CFBoundary repo after cleanup.
 
 The repository ignores:
 
@@ -264,11 +264,11 @@ The repository ignores:
 - `.venv-workers/`
 - `python_modules/`
 - `examples/live_worker/wrangler.deploy.jsonc`
-- `examples/live_worker/src/gasket/`
+- `examples/live_worker/src/cfboundary/`
 
 ### Dependency audit note
 
-`uvx pip-audit --strict --desc` reported a vulnerability in the ambient `pip` package version used by the audit environment. It did not identify an application dependency in Gasket's declared runtime dependency set.
+`uvx pip-audit --strict --desc` reported a vulnerability in the ambient `pip` package version used by the audit environment. It did not identify an application dependency in CFBoundary's declared runtime dependency set.
 
 Recommendation:
 
@@ -278,37 +278,37 @@ Do dependency audits in a clean project environment during release, not against 
 
 Current impact: **low risk**.
 
-- Tasche does not import Gasket directly in runtime code yet.
+- Tasche does not import CFBoundary directly in runtime code yet.
 - `tasche/src/wrappers.py` remains the app-local compatibility layer.
 - The full test suite passes: `1243 passed, 35 skipped`.
 - The current strategy is correct: migrate internals behind Tasche's existing wrapper API rather than forcing application call sites to change at the same time.
 
 Primary migration risks:
 
-1. Tasche's historical JS null helper still documents `js.JSON.parse("null")`; Gasket uses `pyodide.ffi.jsnull`. Migration must preserve the corrected semantics.
+1. Tasche's historical JS null helper still documents `js.JSON.parse("null")`; CFBoundary uses `pyodide.ffi.jsnull`. Migration must preserve the corrected semantics.
 2. Tasche has app-specific helpers such as readability, response shapes, and binding-name properties that must remain local.
-3. Tasche E2E marks are unregistered, causing warnings; unrelated to Gasket but worth cleaning separately.
+3. Tasche E2E marks are unregistered, causing warnings; unrelated to CFBoundary but worth cleaning separately.
 
 ## Impact on Planet CF
 
 Current impact: **low risk**.
 
-- Planet CF does not import Gasket directly in runtime code yet.
+- Planet CF does not import CFBoundary directly in runtime code yet.
 - `planet_cf/src/wrappers.py` remains app-local.
 - The full test suite passes: `1426 passed, 107 skipped`.
-- The known `AsyncMock` RuntimeWarning remains unrelated to Gasket.
+- The known `AsyncMock` RuntimeWarning remains unrelated to CFBoundary.
 
 Primary migration risks:
 
-1. Planet CF's wrapper layer includes app-specific row conversion, auth/session/feed/search concerns, and observability behavior that must not move into Gasket.
+1. Planet CF's wrapper layer includes app-specific row conversion, auth/session/feed/search concerns, and observability behavior that must not move into CFBoundary.
 2. Vectorize and HTTP behavior should be migrated carefully because Planet CF has production search and fetch workflows.
 3. The un-awaited `AsyncMock` warning should be fixed in Planet CF to keep warning noise from hiding future migration regressions.
 
 ## Recommended next steps
 
-1. Keep the Gasket API pre-1.0 until both apps delegate meaningful wrapper internals to it.
+1. Keep the CFBoundary API pre-1.0 until both apps delegate meaningful wrapper internals to it.
 2. Add live E2E coverage for Queue and Vectorize once a consumer migration needs them.
-3. Split `safe_env.py` into smaller modules while preserving `gasket.ffi` exports.
+3. Split `safe_env.py` into smaller modules while preserving `cfboundary.ffi` exports.
 4. Add a required-binding helper only if both apps independently need the pattern.
 5. Add a static type-checking job once the module split stabilizes.
-6. Fix Planet CF's un-awaited `AsyncMock` warning outside the Gasket migration.
+6. Fix Planet CF's un-awaited `AsyncMock` warning outside the CFBoundary migration.

@@ -18,19 +18,19 @@ jobs:
       - name: Sync dependencies
         run: uv sync --group dev
       - name: Compile
-        run: uv run python -m compileall -q gasket
+        run: uv run python -m compileall -q cfboundary
       - name: Import smoke
         run: |
           uv run python - <<'PY'
-          from gasket.ffi import SafeEnv, d1_null
-          from gasket.adapters.scheduled import ScheduledEvent
+          from cfboundary.ffi import SafeEnv, d1_null
+          from cfboundary.adapters.scheduled import ScheduledEvent
           print(SafeEnv, d1_null(None), ScheduledEvent(cron="* * * * *", scheduled_time=0))
           PY
       - name: CLI smoke
-        run: uv run gasket doctor
+        run: uv run cfboundary doctor
       - name: Ruff
         run: uv run ruff check .
       - name: Tests
-        run: uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
+        run: uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
       - name: Build package
         run: uv build

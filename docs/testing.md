@@ -1,14 +1,14 @@
 # Testing
 
-Gasket uses `uv`, `pytest`, `hypothesis`, `ruff`, and `pytest-cov`.
+CFBoundary uses `uv`, `pytest`, `hypothesis`, `ruff`, and `pytest-cov`.
 
 ## Local checks
 
 ```bash
 uv run ruff check .
 uv run pytest
-uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
-uv run python -m compileall -q gasket
+uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
+uv run python -m compileall -q cfboundary
 uv build
 ```
 
@@ -25,19 +25,19 @@ The conversion boundary is tested with Hypothesis to verify invariants such as:
 Live tests are skipped by default and run only when a deployed Worker URL is provided:
 
 ```bash
-GASKET_E2E_BASE_URL=https://your-worker.example.workers.dev uv run pytest tests/e2e
+CFBOUNDARY_E2E_BASE_URL=https://your-worker.example.workers.dev uv run pytest tests/e2e
 ```
 
-The live Worker fixture lives in `examples/live_worker/` and verifies Gasket against real Cloudflare D1, R2, KV, response, and compatibility-probe behavior.
+The live Worker fixture lives in `examples/live_worker/` and verifies CFBoundary against real Cloudflare D1, R2, KV, response, and compatibility-probe behavior.
 
 A manual GitHub Actions workflow, `.github/workflows/e2e.yml`, runs the same tests against a provided deployed Worker URL.
 
 ## Coverage status
 
-Unit/property/contract coverage is enforced at 100% line and branch coverage for the `gasket` package:
+Unit/property/contract coverage is enforced at 100% line and branch coverage for the `cfboundary` package:
 
 ```bash
-uv run pytest --cov=gasket --cov-branch --cov-report=term-missing --cov-fail-under=100
+uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
 ```
 
-The live E2E tests are intentionally skipped unless `GASKET_E2E_BASE_URL` is set, so normal local and CI coverage measures the package code without requiring Cloudflare credentials. Real-platform confidence comes from running the E2E workflow against a deployed `examples/live_worker` instance.
+The live E2E tests are intentionally skipped unless `CFBOUNDARY_E2E_BASE_URL` is set, so normal local and CI coverage measures the package code without requiring Cloudflare credentials. Real-platform confidence comes from running the E2E workflow against a deployed `examples/live_worker` instance.

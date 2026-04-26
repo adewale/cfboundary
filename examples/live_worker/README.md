@@ -1,6 +1,6 @@
 # Live Worker E2E fixture
 
-This is a minimal Cloudflare Python Worker for verifying Gasket against real Cloudflare bindings.
+This is a minimal Cloudflare Python Worker for verifying CFBoundary against real Cloudflare bindings.
 
 It intentionally exercises:
 
@@ -22,7 +22,7 @@ Do not commit Cloudflare API tokens, `.dev.vars`, `.env` files, generated Wrangl
 - `node_modules/`
 - `python_modules/`
 - `examples/live_worker/wrangler.deploy.jsonc`
-- `examples/live_worker/src/gasket/`
+- `examples/live_worker/src/cfboundary/`
 
 `database_id`, KV namespace IDs, and bucket names are resource identifiers rather than API secrets, but this fixture still keeps the generated deployment config untracked.
 
@@ -38,19 +38,19 @@ npx wrangler whoami
 Create resources:
 
 ```bash
-npx wrangler d1 create gasket-live-worker-db
-npx wrangler r2 bucket create gasket-live-worker-objects
+npx wrangler d1 create cfboundary-live-worker-db
+npx wrangler r2 bucket create cfboundary-live-worker-objects
 npx wrangler kv namespace create SESSION_STORE
 ```
 
 Export the IDs returned by Wrangler:
 
 ```bash
-export GASKET_LIVE_D1_DATABASE_ID=<database_id>
-export GASKET_LIVE_KV_NAMESPACE_ID=<kv_namespace_id>
+export CFBOUNDARY_LIVE_D1_DATABASE_ID=<database_id>
+export CFBOUNDARY_LIVE_KV_NAMESPACE_ID=<kv_namespace_id>
 ```
 
-Prepare untracked deployment files and vendor the local checkout of Gasket into the Worker project:
+Prepare untracked deployment files and vendor the local checkout of CFBoundary into the Worker project:
 
 ```bash
 python3 scripts/prepare_deploy.py
@@ -59,7 +59,7 @@ python3 scripts/prepare_deploy.py
 Apply migrations using the generated config:
 
 ```bash
-npx wrangler d1 migrations apply gasket-live-worker-db --remote --config wrangler.deploy.jsonc
+npx wrangler d1 migrations apply cfboundary-live-worker-db --remote --config wrangler.deploy.jsonc
 ```
 
 ## Deploy
@@ -71,7 +71,7 @@ uv run --group workers pywrangler deploy --config wrangler.deploy.jsonc
 ## Run E2E tests
 
 ```bash
-GASKET_E2E_BASE_URL=https://gasket-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e
+CFBOUNDARY_E2E_BASE_URL=https://cfboundary-live-worker.<subdomain>.workers.dev uv run pytest tests/e2e
 ```
 
 Expected endpoints:

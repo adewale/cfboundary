@@ -1,6 +1,6 @@
 # Code of Conduct
 
-Gasket uses the [Contributor Covenant](https://www.contributor-covenant.org/) as its code of conduct.
+CFBoundary uses the [Contributor Covenant](https://www.contributor-covenant.org/) as its code of conduct.
 
 ## Our pledge
 

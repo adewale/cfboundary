@@ -3,8 +3,8 @@
 This example shows the intended pattern: wrap the raw Worker `env` once, then access bindings by name and kind.
 
 ```python
-from gasket.ffi import SafeEnv
-from gasket.adapters.response import full_response
+from cfboundary.ffi import SafeEnv
+from cfboundary.adapters.response import full_response
 
 async def fetch(request, env, ctx):
     safe = SafeEnv(env)
@@ -28,4 +28,4 @@ class AppEnv(SafeEnv):
         return self.d1("DB")
 ```
 
-Do not add project binding names to gasket itself; they are application choices.
+Do not add project binding names to cfboundary itself; they are application choices.

@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
-from gasket.ffi import SafeEnv
+from cfboundary.ffi import SafeEnv
 
 @dataclass
 class ScheduledEvent:

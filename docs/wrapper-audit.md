@@ -2,13 +2,13 @@
 
 ## Spec audit
 
-The original `gasket.md` correctly identified the highest-value reusable pieces: FFI conversion, Safe* wrappers, response/streaming adapters, deployment readiness, smoke checks, and Pyodide probes. The most important correction is scope discipline: gasket must stay generic. Source applications may inspire APIs, but application binding names, row factories, routes, feed validators, article/audio concepts, theme checks, and multi-instance assumptions must remain outside the library.
+The original `cfboundary.md` correctly identified the highest-value reusable pieces: FFI conversion, Safe* wrappers, response/streaming adapters, deployment readiness, smoke checks, and Pyodide probes. The most important correction is scope discipline: cfboundary must stay generic. Source applications may inspire APIs, but application binding names, row factories, routes, feed validators, article/audio concepts, theme checks, and multi-instance assumptions must remain outside the library.
 
 ## Improvements made to the extraction approach
 
 - Replaced binding-name-specific `SafeEnv` attributes with binding-name-agnostic methods: `d1(name)`, `r2(name)`, `kv(name)`, `queue(name)`, `ai(name)`, `vectorize(name)`, `service(name)`, `durable_object(name)`, `analytics_engine(name)`, `fetcher(name)`, and `assets(name)`.
-- Removed the extracted Planet-CF compatibility module from gasket. Planet-specific row factories and feed helpers belong in Planet CF.
-- Removed Tasche-specific service wrapper naming from gasket. A generic `SafeService` now handles fetch and RPC-style service methods.
+- Removed the extracted Planet-CF compatibility module from cfboundary. Planet-specific row factories and feed helpers belong in Planet CF.
+- Removed Tasche-specific service wrapper naming from cfboundary. A generic `SafeService` now handles fetch and RPC-style service methods.
 - Added a Cloudflare API surface audit documenting what is covered, what is intentionally out of scope, and what should wait for proven production usage.
 - Added examples, changelog, and migration documentation.
 
@@ -29,19 +29,19 @@ The original `gasket.md` correctly identified the highest-value reusable pieces:
 1. **Application-specific names leaked into the shared layer.** `DB`, `CONTENT`, `ARTICLE_QUEUE`, `READABILITY`, `SEARCH_INDEX`, etc. are app choices, not library concepts.
 2. **Application-specific helpers were mixed with generic boundary helpers.** Planet row factories and feed bind helpers are model-layer code.
 3. **Some wrappers returned raw JS objects where conversion was expected.** For example, AI/R2/service APIs need a deliberate choice between raw passthrough and Python conversion.
-4. **Wrapper return shapes diverged.** One project's `SafeD1Statement.all()` returned a list; another returned a D1-like object with `.results`. Gasket should document one generic shape and applications can adapt if needed.
+4. **Wrapper return shapes diverged.** One project's `SafeD1Statement.all()` returned a list; another returned a D1-like object with `.results`. CFBoundary should document one generic shape and applications can adapt if needed.
 5. **Observability hooks were embedded in wrappers.** Metrics are valuable, but app-specific event systems should be injected or layered outside generic wrappers.
-6. **Tests encouraged private-name coupling.** New Gasket tests and docs should use public helpers such as `to_py`, `to_js`, `js_null`, and `is_js_missing` instead of underscore-prefixed implementation details.
-7. **Deploy checks were product-specific.** Theme/template/example checks are Planet CF checks, not gasket checks. Gasket should provide primitives and generic validations.
+6. **Tests encouraged private-name coupling.** New CFBoundary tests and docs should use public helpers such as `to_py`, `to_js`, `js_null`, and `is_js_missing` instead of underscore-prefixed implementation details.
+7. **Deploy checks were product-specific.** Theme/template/example checks are Planet CF checks, not cfboundary checks. CFBoundary should provide primitives and generic validations.
 
 ### Recommended migration style
 
 1. Keep app-specific compatibility shims in each app.
-2. Move generic imports to `gasket.ffi` incrementally.
+2. Move generic imports to `cfboundary.ffi` incrementally.
 3. Move app-specific row factories and binding-name adapters to app modules.
-4. Replace direct JS API use with gasket wrappers where the boundary is generic.
-5. Add project-specific deployment validators by composing `gasket.deploy.validate_ready` with local checks.
-6. Only add new gasket abstractions after a real app proves the boundary pattern.
+4. Replace direct JS API use with cfboundary wrappers where the boundary is generic.
+5. Add project-specific deployment validators by composing `cfboundary.deploy.validate_ready` with local checks.
+6. Only add new cfboundary abstractions after a real app proves the boundary pattern.
 
 ## Missing abstractions now covered
 

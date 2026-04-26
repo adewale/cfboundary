@@ -19,4 +19,4 @@ python_modules/
 .env.*
 !.env.example
 examples/live_worker/wrangler.deploy.jsonc
-examples/live_worker/src/gasket/
+examples/live_worker/src/cfboundary/

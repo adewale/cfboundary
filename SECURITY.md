@@ -1,6 +1,6 @@
 # Security policy
 
-Gasket is a small FFI boundary library. Please report security issues privately rather than opening a public issue.
+CFBoundary is a small FFI boundary library. Please report security issues privately rather than opening a public issue.
 
 ## What to report
 

@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a generic Gasket bug
+description: Report a generic CFBoundary bug
 title: "bug: "
 labels: ["bug"]
 body:
@@ -31,7 +31,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Python version, Pyodide/Workers details, Wrangler/PyWrangler version, and Gasket version/commit.
+      description: Python version, Pyodide/Workers details, Wrangler/PyWrangler version, and CFBoundary version/commit.
     validations:
       required: false
   - type: checkboxes
@@ -39,5 +39,5 @@ body:
     attributes:
       label: Scope
       options:
-        - label: This is generic to Gasket, not specific to Tasche or Planet CF application logic.
+        - label: This is generic to CFBoundary, not specific to Tasche or Planet CF application logic.
           required: true

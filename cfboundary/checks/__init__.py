@@ -1,4 +1,4 @@
-"""Static/deployment checks for gasket users."""
+"""Static/deployment checks for cfboundary users."""
 from .common import Finding
 from .ffi_boundary import check_ffi_boundary
 from .handler_consistency import check_handler_consistency

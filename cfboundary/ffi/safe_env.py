@@ -1,6 +1,6 @@
 """Generic FFI boundary layer for Cloudflare Python Workers.
 
-Gasket centralizes conversion at the JavaScript/Python boundary.  The module is
+CFBoundary centralizes conversion at the JavaScript/Python boundary.  The module is
 intentionally binding-name agnostic: applications choose their binding names and
 request wrappers through :class:`SafeEnv` methods such as ``env.d1("DB")`` or
 ``env.r2("ASSETS_BUCKET")``.

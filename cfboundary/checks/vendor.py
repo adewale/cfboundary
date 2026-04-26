@@ -18,7 +18,7 @@ def _imports_under(src: Path) -> set[str]:
                     names.add(alias.name.split(".")[0])
             elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
                 names.add(node.module.split(".")[0])
-    return {n for n in names if n not in _STDLIB_LIKE and n not in {"src", "gasket", "js", "pyodide", "workers"}}
+    return {n for n in names if n not in _STDLIB_LIKE and n not in {"src", "cfboundary", "js", "pyodide", "workers"}}
 
 def check_vendor(project_root: Path, *, vendor_dir: Path = Path("python_modules"), lock_file: Path = Path("uv.lock")) -> list[Finding]:
     """Generic validation for vendored pure-Python modules used by Workers.

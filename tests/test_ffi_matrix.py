@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from gasket.ffi import d1_null, is_js_missing, is_js_null, js_null, to_js, to_py
-from gasket.testing.fakes import FakeJsProxy, patch_pyodide_runtime
+from cfboundary.ffi import d1_null, is_js_missing, is_js_null, js_null, to_js, to_py
+from cfboundary.testing.fakes import FakeJsProxy, patch_pyodide_runtime
 
 
 @pytest.mark.parametrize("runtime", ["cpython", "pyodide-fake"])
