@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from cfboundary.ffi import HAS_PYODIDE, to_js
+from cfboundary.ffi import is_pyodide_runtime, to_js
 from cfboundary.ffi.safe_env import js
 
 
@@ -23,6 +23,6 @@ async def full_response(
     final_headers = {"Content-Type": media_type, **(headers or {})}
     if cache_control:
         final_headers["Cache-Control"] = cache_control
-    if HAS_PYODIDE and js is not None:
+    if is_pyodide_runtime() and js is not None:
         return js.Response.new(body, to_js({"headers": final_headers, "status": status}))
     return {"body": body, "headers": final_headers, "status": status}

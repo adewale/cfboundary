@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, Iterator
 
 
 class JsNull:
@@ -38,17 +38,36 @@ class FakeJsModule:
 
 
 @contextmanager
-def patch_pyodide_runtime(*, with_module: FakeJsModule | None = None):
+def patch_pyodide_runtime(
+    *,
+    has_pyodide: bool = True,
+    js_module: Any | None = None,
+    js_proxy_type: Any | None = None,
+    js_null_value: Any | None = None,
+    to_js_func: Any | None = None,
+) -> Iterator[Any]:
+    """Temporarily install a fake CFBoundary Pyodide runtime for tests."""
     import cfboundary.ffi.safe_env as target
 
-    fake_jsnull = JsNull()
+    runtime_js = js_module or FakeJsModule()
+    runtime_jsnull = js_null_value if js_null_value is not None else JsNull()
+    runtime_proxy = js_proxy_type or FakeJsProxy
+    runtime_to_js = to_js_func or (lambda value, **kwargs: value)
     old = (target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target._pyodide_to_js)
-    target.HAS_PYODIDE = True
-    target.js = with_module or FakeJsModule()
-    target.JsProxy = FakeJsProxy
-    target.jsnull = fake_jsnull
-    target._pyodide_to_js = lambda value, **kwargs: value
+    target.configure_runtime(
+        has_pyodide=has_pyodide,
+        js_module=runtime_js,
+        js_proxy_type=runtime_proxy,
+        js_null_value=runtime_jsnull,
+        to_js_func=runtime_to_js,
+    )
     try:
-        yield
+        yield runtime_js
     finally:
-        target.HAS_PYODIDE, target.js, target.JsProxy, target.jsnull, target._pyodide_to_js = old
+        target.configure_runtime(
+            has_pyodide=old[0],
+            js_module=old[1],
+            js_proxy_type=old[2],
+            js_null_value=old[3],
+            to_js_func=old[4],
+        )

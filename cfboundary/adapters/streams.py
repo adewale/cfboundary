@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from cfboundary.ffi import HAS_PYODIDE, SafeEnv, is_js_missing, to_js
+from cfboundary.ffi import SafeEnv, is_js_missing, is_pyodide_runtime, to_js
 from cfboundary.ffi.safe_env import js
 
 
@@ -21,6 +21,6 @@ async def serve_r2_object_via_js(
     r2_obj = await binding.get(key)
     if is_js_missing(r2_obj):
         return None
-    if not HAS_PYODIDE or js is None:
+    if not is_pyodide_runtime() or js is None:
         return r2_obj
     return js.Response.new(getattr(r2_obj, "body", r2_obj), to_js({"headers": headers or {}}))

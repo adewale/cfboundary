@@ -2,6 +2,14 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.7 - 2026-04-26
+
+### Changed
+
+- Moved runtime override use to `cfboundary.testing.patch_pyodide_runtime()`.
+- Removed `HAS_PYODIDE` and `configure_runtime()` from the public `cfboundary.ffi` export surface.
+- Replaced internal snapshot `HAS_PYODIDE` imports with live runtime checks.
+
 ## 0.1.6 - 2026-04-26
 
 ### Added

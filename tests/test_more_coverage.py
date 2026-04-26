@@ -147,11 +147,9 @@ def test_pyodide_fake_to_js_bytes_and_adapters(monkeypatch) -> None:
 
     module = FakeJsModule()
     module.Response = Response
-    with patch_pyodide_runtime(with_module=module):
+    with patch_pyodide_runtime(js_module=module):
         assert to_js_bytes(b"abc") == b"abc"
-        monkeypatch.setattr(response_mod, "HAS_PYODIDE", True)
         monkeypatch.setattr(response_mod, "js", module)
-        monkeypatch.setattr(streams_mod, "HAS_PYODIDE", True)
         monkeypatch.setattr(streams_mod, "js", module)
         assert run(response_mod.full_response("ok", media_type="text/plain"))["body"] == "ok"
         bucket = SimpleNamespace(get=lambda key: _await(SimpleNamespace(body="stream")))

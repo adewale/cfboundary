@@ -7,7 +7,7 @@ import pytest
 
 from cfboundary.adapters.scheduled import ScheduledHandler
 from cfboundary.http import fetch
-from cfboundary.testing.fakes import FakeJsProxy, FakeJsModule
+from cfboundary.testing.fakes import FakeJsProxy, FakeJsModule, patch_pyodide_runtime
 from cfboundary.testing.smoke import SmokeBase
 
 
@@ -84,9 +84,9 @@ def test_http_pyodide_fetch_branch(monkeypatch) -> None:
         assert options["body"] == "a=b"
         return Response()
 
-    monkeypatch.setattr(http, "HAS_PYODIDE", True)
     monkeypatch.setattr(http, "js_fetch", js_fetch)
-    response = run(fetch("https://worker.test", method="POST", data={"a": "b"}, follow_redirects=False))
+    with patch_pyodide_runtime():
+        response = run(fetch("https://worker.test", method="POST", data={"a": "b"}, follow_redirects=False))
     assert response.status_code == 202
     assert response.text == "accepted"
     assert response.headers == {"content-type": "text/plain"}

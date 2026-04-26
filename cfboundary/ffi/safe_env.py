@@ -570,9 +570,7 @@ def _headers_to_dict(headers: Any) -> dict[str, str]:
 
 
 __all__ = [
-    "HAS_PYODIDE",
     "JsException",
-    "configure_runtime",
     "is_pyodide_runtime",
     "MAX_CONVERSION_DEPTH",
     "js_null",

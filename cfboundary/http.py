@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 from urllib.parse import urlencode
 
-from cfboundary.ffi.safe_env import HAS_PYODIDE, _headers_to_dict, to_js
+from cfboundary.ffi.safe_env import _headers_to_dict, is_pyodide_runtime, to_js
 
 try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
     from js import fetch as js_fetch  # type: ignore[import-not-found]
@@ -81,7 +81,7 @@ async def fetch(
     else:
         body = data
 
-    if HAS_PYODIDE and js_fetch is not None:
+    if is_pyodide_runtime() and js_fetch is not None:
         options: dict[str, Any] = {
             "method": method,
             "headers": request_headers,

@@ -1,11 +1,11 @@
 """Low-level Python/JavaScript FFI conversion helpers."""
 
 from .safe_env import (  # noqa: F401
-    HAS_PYODIDE,
     consume_readable_stream,
     d1_null,
     is_js_missing,
     is_js_null,
+    is_pyodide_runtime,
     js_null,
     stream_r2_body,
     to_js,
@@ -16,7 +16,7 @@ from .safe_env import (  # noqa: F401
 
 
 def is_js_proxy(x: object) -> bool:
-    return HAS_PYODIDE and hasattr(x, "to_py")
+    return is_pyodide_runtime() and hasattr(x, "to_py")
 
 
 def js_object(d: dict) -> object:

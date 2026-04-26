@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from cfboundary.http import FetchError, FetchResponse, fetch
+from cfboundary.testing import patch_pyodide_runtime
 
 
 def run(coro):
@@ -87,13 +88,12 @@ def test_fetch_pyodide_without_body_and_cpython_missing_httpx(monkeypatch) -> No
         assert "body" not in options
         return Response()
 
-    monkeypatch.setattr(http, "HAS_PYODIDE", True)
     monkeypatch.setattr(http, "js_fetch", js_fetch)
-    response = run(fetch("https://worker.test"))
+    with patch_pyodide_runtime():
+        response = run(fetch("https://worker.test"))
     assert response.status_code == 204
     assert response.url == "https://worker.test"
 
-    monkeypatch.setattr(http, "HAS_PYODIDE", False)
     monkeypatch.setattr(http, "httpx", None)
     with pytest.raises(RuntimeError):
         run(fetch("https://worker.test"))
