@@ -111,7 +111,10 @@ def _to_js_value(value: Any) -> Any:
     """
     if not HAS_PYODIDE or _pyodide_to_js is None:
         return value
-    return _pyodide_to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
+    try:
+        return _pyodide_to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
+    except TypeError:
+        return _pyodide_to_js(value, dict_converter=js.Object.fromEntries)
 
 
 def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
