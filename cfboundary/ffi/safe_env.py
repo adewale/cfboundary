@@ -34,6 +34,33 @@ except ImportError:
 MAX_CONVERSION_DEPTH = 50
 
 
+def configure_runtime(
+    *,
+    has_pyodide: bool | None = None,
+    js_module: Any = None,
+    js_proxy_type: Any = None,
+    js_null_value: Any = None,
+    to_js_func: Any = None,
+) -> None:
+    """Override the runtime bridge used by conversion helpers.
+
+    This is primarily for application compatibility layers and tests that
+    already monkeypatch their own Pyodide fakes. Production Workers normally use
+    the module-level imports populated by Pyodide.
+    """
+    global HAS_PYODIDE, js, JsProxy, jsnull, _pyodide_to_js
+    if has_pyodide is not None:
+        HAS_PYODIDE = has_pyodide
+    if js_module is not None:
+        js = js_module
+    if js_proxy_type is not None:
+        JsProxy = js_proxy_type
+    if js_null_value is not None:
+        jsnull = js_null_value
+    if to_js_func is not None:
+        _pyodide_to_js = to_js_func
+
+
 def js_null() -> Any:
     """Return JavaScript ``null`` in Workers; ``None`` in CPython tests.
 
@@ -528,6 +555,7 @@ def _headers_to_dict(headers: Any) -> dict[str, str]:
 __all__ = [
     "HAS_PYODIDE",
     "JsException",
+    "configure_runtime",
     "MAX_CONVERSION_DEPTH",
     "js_null",
     "is_js_null",
