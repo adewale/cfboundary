@@ -184,6 +184,7 @@ The CLI is standalone. It is not a Ruff plugin.
 - [`docs/testing.md`](docs/testing.md)
 - [`docs/compatibility-matrix.md`](docs/compatibility-matrix.md)
 - [`docs/application-adapters.md`](docs/application-adapters.md)
+- [`docs/before-after.md`](docs/before-after.md)
 - [`docs/surface-polish.md`](docs/surface-polish.md)
 - [`docs/wrapper-audit.md`](docs/wrapper-audit.md)
 - [`docs/deep-audit-2026-04-25.md`](docs/deep-audit-2026-04-25.md)

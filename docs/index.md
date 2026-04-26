@@ -9,6 +9,7 @@ CFBoundary is a generic toolkit for Cloudflare Python Workers. These docs explai
 - [Testing](testing.md) — local, property-based, coverage, and live E2E testing.
 - [Compatibility test matrix](compatibility-matrix.md) — the CPython, Pyodide-fake, and deployed-worker coverage expected for cfboundary and apps.
 - [Application adapters](application-adapters.md) — how to keep app-specific compatibility out of cfboundary.
+- [Before and after examples](before-after.md) — common app-local wrapper patterns migrated to CFBoundary.
 - [Surface polish backlog](surface-polish.md) — Pythonic API improvements implemented and still planned.
 - [Wrapper audit](wrapper-audit.md) — lessons from the source wrappers and improvements made during extraction.
 - [Deep audit, 2026-04-25](deep-audit-2026-04-25.md) — project-wide audit of CFBoundary and migration impact on Tasche and Planet CF.
