@@ -2,6 +2,12 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.6 - 2026-04-26
+
+### Added
+
+- Added `is_pyodide_runtime()` as a live runtime-state helper for consumers and tests.
+
 ## 0.1.5 - 2026-04-26
 
 ### Changed

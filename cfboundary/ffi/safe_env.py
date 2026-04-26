@@ -63,6 +63,11 @@ def configure_runtime(
         _pyodide_to_js = to_js_func
 
 
+def is_pyodide_runtime() -> bool:
+    """Return whether the active runtime configuration is Pyodide/Workers."""
+    return HAS_PYODIDE
+
+
 def js_null() -> Any:
     """Return JavaScript ``null`` in Workers; ``None`` in CPython tests.
 
@@ -568,6 +573,7 @@ __all__ = [
     "HAS_PYODIDE",
     "JsException",
     "configure_runtime",
+    "is_pyodide_runtime",
     "MAX_CONVERSION_DEPTH",
     "js_null",
     "is_js_null",

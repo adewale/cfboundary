@@ -49,6 +49,7 @@ def test_configure_runtime_overrides_and_restores_conversion_globals() -> None:
         assert ffi.to_js({"a": 1})["value"] == {"a": 1}
         ffi.configure_runtime()
         assert safe_env.HAS_PYODIDE is True
+        assert ffi.is_pyodide_runtime() is True
         ffi.configure_runtime(js_module=object())
         assert ffi.is_js_missing(object()) is False
     finally:
