@@ -2,6 +2,8 @@
 
 All notable changes to cfboundary are documented here.
 
+Historical entries before 0.1.9 may mention APIs that were later removed when the package was narrowed to the used shared FFI core.
+
 ## 0.1.9 - 2026-04-26
 
 ### Removed

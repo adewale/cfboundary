@@ -18,8 +18,7 @@ This project uses `uv`.
 ```bash
 uv sync --group dev
 uv run python -m compileall -q cfboundary
-uv run cfboundary doctor
-uv run pytest
+uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
 ```
 
 If you are changing style-sensitive code, also run:

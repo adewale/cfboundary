@@ -86,7 +86,7 @@ Expected result: both suites pass. Known warning classes should be documented in
 - [ ] README project status is honest about pre-1.0 compatibility.
 - [ ] Live Worker README uses `pywrangler`, not plain `wrangler`, for deployment.
 - [ ] Live Worker docs do not publish personal resource IDs or generated config.
-- [ ] Documentation distinguishes live-tested bindings from locally/fake-tested bindings.
+- [ ] Documentation distinguishes live-tested FFI behavior from app-specific binding wrappers that belong outside CFBoundary.
 - [ ] New public APIs are documented and included in tests.
 
 Optional local Markdown link check:
@@ -128,9 +128,9 @@ git push origin main --tags
 For a pre-1.0 release, release notes should say:
 
 - breaking changes are allowed before 1.0;
-- CFBoundary is generic boundary tooling, not an application framework;
-- Tasche and Planet CF migrations remain incremental behind app-local wrappers;
-- live E2E was run against Cloudflare for D1/R2/KV/response/compat behavior.
+- CFBoundary is generic FFI boundary tooling, not an application framework;
+- Tasche and Planet CF use app-local wrappers for app-specific binding semantics;
+- live E2E was run against Cloudflare for D1/R2/KV conversion and runtime-detection behavior.
 
 ## 9. Post-release cleanup
 

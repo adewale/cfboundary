@@ -1,6 +1,6 @@
 # Pre-release checklist execution: 2026-04-25
 
-This records execution of `docs/pre-release-checklist.md` for the current pre-GitHub CFBoundary state.
+This historical report records the 2026-04-25 checklist run. The public API has since been narrowed to the used shared FFI core in v0.1.9; use the current `README.md` and `docs/pre-release-checklist.md` for release guidance.
 
 ## Summary
 
@@ -50,7 +50,7 @@ uvx twine check dist/*
 uvx vulture cfboundary tests --min-confidence 80
 ```
 
-Results:
+Results from the original run:
 
 ```text
 ruff: pass
@@ -58,6 +58,13 @@ pytest: 70 passed, 5 skipped
 coverage: 100% line, 100% branch
 twine: source distribution and wheel passed
 vulture: no production findings
+```
+
+Current v0.1.9 local validation after trimming unused APIs:
+
+```text
+pytest: 23 passed, 5 skipped
+coverage: 100% line, 100% branch
 ```
 
 ### Live Cloudflare E2E
@@ -81,7 +88,7 @@ The live fixture verifies:
 - `/d1-null`
 - `/r2`
 - `/kv`
-- `/compat`
+- `/compat` runtime detection
 
 ### Consumer regression suites
 
