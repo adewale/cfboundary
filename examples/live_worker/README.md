@@ -4,12 +4,11 @@ This is a minimal Cloudflare Python Worker for verifying CFBoundary against real
 
 It intentionally exercises:
 
-- `full_response()`
-- D1 `None` → JS `null` bind behavior
-- D1 read conversion back to Python `None`
-- R2 bytes write/read/delete
+- D1 `None` → JS `null` bind behavior via `d1_null()`
+- D1 read conversion back to Python `None` via `to_py()`
+- R2 bytes write/read/delete via `to_js_bytes()` / `to_js()`
 - KV put/get/delete
-- runtime compatibility probes
+- runtime detection via `is_pyodide_runtime()`
 
 ## Secret-safety notes
 

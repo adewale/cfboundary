@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import importlib
-
 from hypothesis import given
 from hypothesis import strategies as st
 
 import cfboundary.ffi as ffi
-from cfboundary.ffi import R2ListResult, SafeVectorize, is_js_missing, is_js_null, js_null, to_js, to_py
+from cfboundary.ffi import is_js_missing, is_js_null, js_null, to_js, to_py
 from cfboundary.testing.fakes import patch_pyodide_runtime
 
 json_scalars = st.none() | st.booleans() | st.integers() | st.floats(allow_nan=False) | st.text()
@@ -72,29 +70,3 @@ def test_pyodide_fake_null_surface_uses_public_names() -> None:
         assert is_js_missing(null) is True
         assert is_js_missing(None) is True
 
-
-class VectorizeDeleteByIdsOnly:
-    async def deleteByIds(self, ids):
-        return {"deleted": ids}
-
-
-class VectorizeDeleteOnly:
-    async def delete(self, ids):
-        return {"deleted": ids}
-
-
-def run(coro):
-    import asyncio
-
-    return asyncio.run(coro)
-
-
-def test_vectorize_uses_pythonic_delete_by_ids() -> None:
-    assert run(SafeVectorize(VectorizeDeleteByIdsOnly()).delete_by_ids(["a"])) == {"deleted": ["a"]}
-    assert run(SafeVectorize(VectorizeDeleteOnly()).delete_by_ids(["b"])) == {"deleted": ["b"]}
-    assert not hasattr(SafeVectorize(VectorizeDeleteOnly()), "deleteByIds")
-
-
-def test_result_aliases_are_available_for_pythonic_docs() -> None:
-    safe_env = importlib.import_module("cfboundary.ffi.safe_env")
-    assert safe_env.R2ListResult is R2ListResult

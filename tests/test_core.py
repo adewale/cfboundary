@@ -1,21 +1,7 @@
 from __future__ import annotations
 
-from cfboundary.ffi import SafeEnv, d1_null, is_js_missing, is_js_null, js_null, to_py
+from cfboundary.ffi import d1_null, is_js_missing, is_js_null, js_null, to_py
 from cfboundary.testing.fakes import FakeJsProxy, patch_pyodide_runtime
-
-
-def test_safe_env_is_binding_name_agnostic() -> None:
-    class RawEnv:
-        DATABASE = object()
-        OBJECTS = object()
-        SESSION_STORE = object()
-
-    env = SafeEnv(RawEnv())
-
-    assert env.d1("DATABASE") is not None
-    assert env.r2("OBJECTS") is not None
-    assert env.kv("SESSION_STORE") is not None
-    assert env.get("MISSING") is None
 
 
 def test_to_py_converts_nested_js_proxy_values() -> None:

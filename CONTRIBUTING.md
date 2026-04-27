@@ -8,7 +8,7 @@ CFBoundary must stay generic:
 
 - Do not add application-specific binding names such as `DB`, `CONTENT`, or `SEARCH_INDEX` to the library surface.
 - Do not add product-specific row factories, route helpers, auth/session code, feed/article/theme logic, or deployment topology.
-- Prefer binding-kind APIs such as `SafeEnv.d1(name)`, `SafeEnv.r2(name)`, and `SafeEnv.service(name)`.
+- Keep binding-name and binding-wrapper semantics in application projects; CFBoundary should stay focused on generic FFI conversion/runtime helpers.
 - Add new Cloudflare API wrappers only when there is a reusable FFI boundary pattern.
 
 ## Local checks

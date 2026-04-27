@@ -1,8 +1,13 @@
 # Rationale
 
-CFBoundary is an extraction of code already proven in the two applications:
+CFBoundary is an extraction of code proven in both `tasche` and `planet_cf`, narrowed to the subset that belongs in a shared library.
 
-- Tasche contributed the core FFI boundary and Safe* wrapper design, including explicit conversion in both directions, D1 `None` → JS `null`, R2 byte conversion, ReadableStream consumption, and direct JS Response streaming for large R2 payloads.
-- Planet CF contributed Vectorize usage, vendor/deploy readiness checks, deployment verification patterns, type stubs, and Pyodide compatibility probes.
+The package keeps generic boundary mechanics:
 
-The library deliberately avoids a framework abstraction. It sits below FastAPI/custom Worker handlers and centralizes the parts that are easy to get wrong at the Python/JavaScript boundary.
+- Python ↔ JavaScript value conversion;
+- Pyodide `null` / `undefined` / missing-value handling;
+- D1 `None` → JS `null` bind values;
+- byte and readable-stream helpers used around R2-style bodies;
+- fake Pyodide runtime setup for CPython tests.
+
+The package deliberately does **not** provide app boundary wrappers, binding-name policy, deployment policy, static checks, smoke-test assertions, row factories, routes, auth/session/feed/search semantics, or a Worker framework. Those belong in individual Worker projects.

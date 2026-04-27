@@ -28,7 +28,7 @@ Live tests are skipped by default and run only when a deployed Worker URL is pro
 CFBOUNDARY_E2E_BASE_URL=https://your-worker.example.workers.dev uv run pytest tests/e2e
 ```
 
-The live Worker fixture lives in `examples/live_worker/` and verifies CFBoundary against real Cloudflare D1, R2, KV, response, and compatibility-probe behavior.
+The live Worker fixture lives in `examples/live_worker/` and verifies CFBoundary against real Cloudflare D1, R2, KV, conversion, and null/missing-value behavior.
 
 A manual GitHub Actions workflow, `.github/workflows/e2e.yml`, runs the same tests against a provided deployed Worker URL.
 

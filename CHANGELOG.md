@@ -2,6 +2,17 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.9 - 2026-04-26
+
+### Removed
+
+- Removed unused public modules and APIs not consumed by `tasche` or `planet_cf`: `SafeEnv`, `Safe*` binding wrappers, `cfboundary.http`, `cfboundary.adapters`, `cfboundary.checks`, `cfboundary.deploy`, `cfboundary.compat`, the `cfboundary` CLI, and `cfboundary.testing.smoke`.
+- Removed the external `httpx` dependency.
+
+### Changed
+
+- Narrowed CFBoundary to the shared FFI conversion/runtime helpers and `patch_pyodide_runtime()` testing support.
+
 ## 0.1.8 - 2026-04-26
 
 ### Changed
