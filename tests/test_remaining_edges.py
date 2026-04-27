@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from cfboundary.adapters.scheduled import ScheduledHandler
+from cfboundary.adapters.scheduled import scheduled_event_from_js
 from cfboundary.http import fetch
 from cfboundary.testing.fakes import FakeJsProxy, FakeJsModule, patch_pyodide_runtime
 from cfboundary.testing.smoke import SmokeBase
@@ -15,9 +15,10 @@ def run(coro):
     return asyncio.run(coro)
 
 
-def test_scheduled_base_raises() -> None:
-    with pytest.raises(NotImplementedError):
-        run(ScheduledHandler().scheduled(SimpleNamespace(), SimpleNamespace(), SimpleNamespace()))
+def test_scheduled_event_from_js_accepts_pythonic_name() -> None:
+    event = scheduled_event_from_js(SimpleNamespace(cron="0 * * * *", scheduled_time=456))
+    assert event.cron == "0 * * * *"
+    assert event.scheduled_time == 456
 
 
 def test_fake_js_proxy_and_module_edges() -> None:
@@ -52,8 +53,6 @@ def test_smoke_failure_paths() -> None:
     smoke = SmokeBase("https://example.test", ok_request)
     with pytest.raises(AssertionError):
         smoke.assert_content_type("/", "json")
-    with pytest.raises(Exception):
-        smoke.assert_feed_valid("/", kind="rss")
 
 
 def test_http_pyodide_fetch_branch(monkeypatch) -> None:

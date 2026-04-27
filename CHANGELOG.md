@@ -2,6 +2,15 @@
 
 All notable changes to cfboundary are documented here.
 
+## 0.1.8 - 2026-04-26
+
+### Changed
+
+- Removed feed-specific smoke assertions from generic testing helpers.
+- Replaced the scheduled-handler subclass scaffold with a small scheduled-event normalization helper.
+- Changed check codes from `GSK*` to `CFB*`.
+- Deprecated the generic handler-consistency check as an app-policy no-op.
+
 ## 0.1.7 - 2026-04-26
 
 ### Changed
@@ -47,7 +56,7 @@ All notable changes to cfboundary are documented here.
 - Binding-name-agnostic `SafeEnv` with wrappers for D1, R2, KV, Queues, Workers AI, Vectorize, service bindings, Durable Objects, Analytics Engine, Cache API, Fetcher/service bindings, and Static Assets.
 - Response, stream, and scheduled-event adapters.
 - CPython/Pyodide test fakes and smoke-test helpers.
-- Static checks for FFI boundary leaks, Pyodide pitfalls, handler consistency, and vendored Python modules.
+- Static checks for FFI boundary leaks, Pyodide pitfalls, and vendored Python modules.
 - Deployment readiness validator and deployment orchestration result types.
 - Compatibility probes for blocked `eval`, blocked `Function`, and module importability.
 - Cloudflare Workers type stubs copied from the source applications and made generic.
@@ -58,4 +67,4 @@ All notable changes to cfboundary are documented here.
 - Removed backwards-compatibility names from the public `cfboundary.ffi` export surface in favor of `js_null`, `is_js_missing`, `to_py`, `to_js`, `R2ListResult`, `cfboundary.http.fetch`, and `plan_deploy`.
 - `full_response()` now accepts an explicit `status` argument.
 - `SafeQueue.send()` now forwards its `content_type` argument to Cloudflare Queue options.
-- `validate_ready(required_secrets=...)` now emits `GSK103` warnings instead of silently ignoring required secret checks.
+- `validate_ready(required_secrets=...)` now emits `CFB103` warnings instead of silently ignoring required secret checks.

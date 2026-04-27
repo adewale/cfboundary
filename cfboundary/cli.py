@@ -5,7 +5,6 @@ from pathlib import Path
 
 from cfboundary.checks import (
     check_ffi_boundary,
-    check_handler_consistency,
     check_pyodide_pitfalls,
     check_vendor,
 )
@@ -47,7 +46,6 @@ def main(argv: list[str] | None = None) -> int:
     findings = []
     findings += check_ffi_boundary(paths)
     findings += check_pyodide_pitfalls(paths)
-    findings += check_handler_consistency(paths)
     if Path("python_modules").exists() or Path("pyproject.toml").exists():
         findings += check_vendor(Path("."))
     _print(findings)

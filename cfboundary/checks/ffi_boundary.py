@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from .common import Finding
 
-_PATTERNS = [(re.compile(r"\bimport js\b|from js import"), "GSK001", "direct js import outside boundary"), (re.compile(r"from pyodide\.ffi import .*to_js|\bto_js\("), "GSK002", "direct to_js use; route through cfboundary"), (re.compile(r"\.to_py\("), "GSK003", "direct JsProxy conversion; route through cfboundary")]
+_PATTERNS = [(re.compile(r"\bimport js\b|from js import"), "CFB001", "direct js import outside boundary"), (re.compile(r"from pyodide\.ffi import .*to_js|\bto_js\("), "CFB002", "direct to_js use; route through cfboundary"), (re.compile(r"\.to_py\("), "CFB003", "direct JsProxy conversion; route through cfboundary")]
 
 def check_ffi_boundary(paths: list[Path]) -> list[Finding]:
     findings: list[Finding] = []

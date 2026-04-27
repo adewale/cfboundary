@@ -1,9 +1,8 @@
 """HTTP-client-agnostic smoke test helpers."""
 from __future__ import annotations
 import time
-from typing import Callable, Literal, Any
+from typing import Callable, Any
 from urllib.parse import urljoin
-import xml.etree.ElementTree as ET
 
 class SmokeBase:
     def __init__(self, base_url: str, request: Callable[..., Any], *, default_headers: dict[str, str] | None = None):
@@ -36,9 +35,3 @@ class SmokeBase:
     def assert_content_type(self, path: str, expected: str) -> None:
         resp = self.assert_status(path)
         assert expected in resp.headers.get("content-type", resp.headers.get("Content-Type", ""))
-
-    def assert_feed_valid(self, path: str, *, kind: Literal["rss", "atom", "opml"]) -> None:
-        resp = self.assert_status(path)
-        ET.fromstring(resp.text)
-        expected = {"rss": "<rss", "atom": "<feed", "opml": "<opml"}[kind]
-        assert expected in resp.text.lower()

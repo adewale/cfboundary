@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from cfboundary.adapters.response import full_response
-from cfboundary.adapters.scheduled import ScheduledHandler
+from cfboundary.adapters.scheduled import scheduled_event_from_js
 from cfboundary.adapters.streams import serve_r2_object_via_js
 from cfboundary.checks import (
     check_ffi_boundary,
@@ -41,19 +41,9 @@ def test_serve_r2_object_via_js_cpython() -> None:
     assert run(serve_r2_object_via_js(env, "BUCKET", "present")).body == "body"
 
 
-def test_scheduled_handler_wraps_event_and_env() -> None:
-    calls = []
-
-    class Handler(ScheduledHandler):
-        async def scheduled(self, event, env, ctx):
-            calls.append((event.cron, event.scheduled_time, env, ctx))
-
-    raw_env = SimpleNamespace(VALUE="x")
-    ctx = object()
-    run(Handler()(SimpleNamespace(cron="* * * * *", scheduledTime=123), raw_env, ctx))
-    assert calls[0][0:2] == ("* * * * *", 123)
-    assert calls[0][2].var("VALUE") == "x"
-    assert calls[0][3] is ctx
+def test_scheduled_event_from_js() -> None:
+    event = scheduled_event_from_js(SimpleNamespace(cron="* * * * *", scheduledTime=123))
+    assert (event.cron, event.scheduled_time, event.type) == ("* * * * *", 123, "scheduled")
 
 
 def test_checks_find_expected_patterns(tmp_path: Path) -> None:
@@ -66,26 +56,26 @@ def test_checks_find_expected_patterns(tmp_path: Path) -> None:
         "StreamingResponse([])\n"
         "class Default: pass\n"
     )
-    assert {f.code for f in check_ffi_boundary([tmp_path])} >= {"GSK001", "GSK002", "GSK003"}
-    assert {f.code for f in check_pyodide_pitfalls([tmp_path])} >= {"GSK010", "GSK012"}
-    assert {f.code for f in check_handler_consistency([tmp_path])} == {"GSK020"}
+    assert {f.code for f in check_ffi_boundary([tmp_path])} >= {"CFB001", "CFB002", "CFB003"}
+    assert {f.code for f in check_pyodide_pitfalls([tmp_path])} >= {"CFB010", "CFB012"}
+    assert check_handler_consistency([tmp_path]) == []
 
 
 def test_vendor_check_missing_and_native_extension(tmp_path: Path) -> None:
     missing = check_vendor(tmp_path)
-    assert missing[0].code == "GSK030"
+    assert missing[0].code == "CFB030"
     vendor = tmp_path / "python_modules"
     vendor.mkdir()
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "app.py").write_text("import requests\n")
     (vendor / "bad.so").write_bytes(b"")
     codes = {f.code for f in check_vendor(tmp_path)}
-    assert "GSK031" in codes
-    assert "GSK033" in codes
+    assert "CFB031" in codes
+    assert "CFB033" in codes
 
 
 def test_deploy_plan_and_cli(tmp_path: Path, capsys) -> None:
-    assert validate_ready(tmp_path)[0].code == "GSK100"
+    assert validate_ready(tmp_path)[0].code == "CFB100"
     plan = plan_deploy(tmp_path)
     assert plan.can_deploy is False
     assert main(["doctor"]) == 0
@@ -96,7 +86,7 @@ def test_deploy_plan_and_cli(tmp_path: Path, capsys) -> None:
 
 def test_smoke_base_helpers() -> None:
     class Response:
-        def __init__(self, status_code=200, text="<rss></rss>", headers=None):
+        def __init__(self, status_code=200, text="ok", headers=None):
             self.status_code = status_code
             self.text = text
             self.headers = headers or {"content-type": "application/rss+xml"}
@@ -112,8 +102,7 @@ def test_smoke_base_helpers() -> None:
     smoke.assert_status("/")
     smoke.assert_all_load(["/a", "/b"])
     smoke.assert_content_type("/feed", "rss")
-    smoke.assert_feed_valid("/feed", kind="rss")
-    assert len(seen) == 6
+    assert len(seen) == 5
 
 
 def test_e2e_tests_are_skipped_by_default() -> None:

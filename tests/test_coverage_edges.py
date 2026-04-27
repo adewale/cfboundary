@@ -12,7 +12,7 @@ from cfboundary.deploy import validate_ready
 def test_check_file_inputs_and_unicode_errors(tmp_path: Path) -> None:
     file_path = tmp_path / "one.py"
     file_path.write_text("import js\n")
-    assert check_ffi_boundary([file_path])[0].code == "GSK001"
+    assert check_ffi_boundary([file_path])[0].code == "CFB001"
 
     bad = tmp_path / "bad.py"
     bad.write_bytes(b"\xff\xfe")
@@ -28,7 +28,7 @@ def test_check_file_inputs_and_unicode_errors(tmp_path: Path) -> None:
 def test_pyodide_pitfalls_function_constructor(tmp_path: Path) -> None:
     source = tmp_path / "pit.py"
     source.write_text("Function('return 1')\n")
-    assert check_pyodide_pitfalls([source])[0].code == "GSK011"
+    assert check_pyodide_pitfalls([source])[0].code == "CFB011"
 
 
 def test_vendor_dist_info_lockfile_and_parse_errors(tmp_path: Path) -> None:
@@ -44,8 +44,8 @@ def test_vendor_dist_info_lockfile_and_parse_errors(tmp_path: Path) -> None:
     old = time.time() - 100
     os.utime(vendor, (old, old))
     codes = {f.code for f in check_vendor(tmp_path)}
-    assert "GSK031" in codes
-    assert "GSK032" in codes
+    assert "CFB031" in codes
+    assert "CFB032" in codes
 
 
 def test_validate_ready_valid_invalid_and_empty_migrations(tmp_path: Path) -> None:
@@ -54,22 +54,22 @@ def test_validate_ready_valid_invalid_and_empty_migrations(tmp_path: Path) -> No
     migrations = tmp_path / "migrations"
     migrations.mkdir()
     codes = {f.code for f in validate_ready(tmp_path, required_secrets=["TOKEN"])}
-    assert "GSK100" not in codes
-    assert "GSK102" in codes
-    assert "GSK103" in codes
+    assert "CFB100" not in codes
+    assert "CFB102" in codes
+    assert "CFB103" in codes
 
     (tmp_path / "wrangler.jsonc").write_text("{")
-    assert "GSK101" in {f.code for f in validate_ready(tmp_path)}
+    assert "CFB101" in {f.code for f in validate_ready(tmp_path)}
 
     (migrations / "0001.sql").write_text("select 1")
-    assert "GSK102" not in {f.code for f in validate_ready(tmp_path)}
+    assert "CFB102" not in {f.code for f in validate_ready(tmp_path)}
 
 
 def test_cli_check_paths(tmp_path: Path, capsys, monkeypatch) -> None:
     source = tmp_path / "x.py"
     source.write_text("StreamingResponse([])\n")
     assert main(["check", str(tmp_path)]) == 1
-    assert "GSK012" in capsys.readouterr().out
+    assert "CFB012" in capsys.readouterr().out
 
     clean = tmp_path / "clean"
     clean.mkdir()

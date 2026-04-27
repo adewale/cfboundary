@@ -135,13 +135,13 @@ The binding names are yours. CFBoundary only knows the binding **kind**.
 
 - `cfboundary.adapters.response.full_response()` for fully-buffered JavaScript `Response` objects.
 - `cfboundary.adapters.streams.serve_r2_object_via_js()` for keeping large R2 payloads on the JavaScript side.
-- `cfboundary.adapters.scheduled.ScheduledHandler` for cron-triggered Workers.
+- `cfboundary.adapters.scheduled.scheduled_event_from_js()` for normalizing cron-trigger event objects.
 
 ### Testing, checks, and deploy helpers
 
 - `cfboundary.testing.fakes` for exercising Pyodide branches from CPython.
 - `cfboundary.testing.smoke.SmokeBase` for deployed-worker smoke checks.
-- `cfboundary.checks` for FFI-boundary, Pyodide-pitfall, handler, and vendor checks.
+- `cfboundary.checks` for FFI-boundary, Pyodide-pitfall, and vendor checks.
 - `cfboundary.deploy.validate_ready()` and `cfboundary.deploy.plan_deploy()` for generic deploy-readiness planning.
 - `cfboundary.http.fetch()` for Workers/CPython HTTP fetch normalization.
 - `cfboundary.compat.probes` for runtime compatibility probes.

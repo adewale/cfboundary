@@ -6,11 +6,11 @@ from pathlib import Path
 from .common import Finding
 
 _PATTERNS = [
-    (re.compile(r"js\.eval\(|\beval\("), "GSK010", "eval is blocked in Workers/Pyodide"),
-    (re.compile(r"Function\("), "GSK011", "Function constructor is blocked in Workers/Pyodide"),
+    (re.compile(r"js\.eval\(|\beval\("), "CFB010", "eval is blocked in Workers/Pyodide"),
+    (re.compile(r"Function\("), "CFB011", "Function constructor is blocked in Workers/Pyodide"),
     (
         re.compile(r"StreamingResponse"),
-        "GSK012",
+        "CFB012",
         "StreamingResponse may truncate; use cfboundary.adapters.response.full_response",
     ),
 ]
