@@ -84,7 +84,7 @@ Severity: Low/Medium
 
 Fix:
 
-- `validate_ready()` now emits `GSK103` warnings for required secrets, explicitly telling callers to verify those in application-specific deploy checks.
+- `validate_ready()` now emits `CFB103` warnings for required secrets, explicitly telling callers to verify those in application-specific deploy checks.
 - Tests cover this behavior.
 
 Files:
