@@ -5,7 +5,7 @@ CFBoundary is a small Cloudflare Python Workers FFI helper library. It now keeps
 ## Install
 
 ```bash
-uv add 'cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.9'
+uv add 'cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.10'
 ```
 
 ## Public API

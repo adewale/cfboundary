@@ -1,6 +1,6 @@
 [project]
 name = "cfboundary"
-version = "0.1.9"
+version = "0.1.10"
 description = "Small Cloudflare Python Workers FFI boundary helper library"
 readme = "README.md"
 requires-python = ">=3.12"

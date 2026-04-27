@@ -47,7 +47,7 @@ def patch_pyodide_runtime(
     to_js_func: Any | None = None,
 ) -> Iterator[Any]:
     """Temporarily install a fake CFBoundary Pyodide runtime for tests."""
-    import cfboundary.ffi.safe_env as target
+    import cfboundary.ffi.core as target
 
     runtime_js = js_module or FakeJsModule()
     runtime_jsnull = js_null_value if js_null_value is not None else JsNull()

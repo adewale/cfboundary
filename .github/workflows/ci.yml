@@ -30,6 +30,8 @@ jobs:
           PY
       - name: Ruff
         run: uv run ruff check .
+      - name: Type check
+        run: uvx ty check cfboundary tests
       - name: Tests
         run: uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
       - name: Build package

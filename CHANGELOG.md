@@ -4,6 +4,14 @@ All notable changes to cfboundary are documented here.
 
 Historical entries before 0.1.9 may mention APIs that were later removed when the package was narrowed to the used shared FFI core.
 
+## 0.1.10 - 2026-04-27
+
+### Changed
+
+- Renamed the internal FFI implementation module from `cfboundary.ffi.safe_env` to `cfboundary.ffi.core`.
+- Added CI type checking with `ty` for CFBoundary.
+- Kept the public API unchanged from the trimmed FFI/testing surface.
+
 ## 0.1.9 - 2026-04-26
 
 ### Removed

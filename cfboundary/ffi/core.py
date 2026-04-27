@@ -2,28 +2,27 @@
 
 from __future__ import annotations
 
-from typing import Any
+from importlib import import_module
+from typing import Any, cast
 
 try:  # pragma: no cover - exercised only inside the Pyodide/Workers runtime
-    import js  # type: ignore[import-not-found]
-    from pyodide.ffi import (  # type: ignore[import-not-found]
-        JsException,
-        JsProxy,
-        jsnull,
-        to_js as _pyodide_to_js,
-    )
-
+    js: Any = import_module("js")
+    pyodide_ffi: Any = import_module("pyodide.ffi")
+    JsException: Any = pyodide_ffi.JsException
+    JsProxy: Any = pyodide_ffi.JsProxy
+    jsnull: Any = pyodide_ffi.jsnull
+    _pyodide_to_js: Any = pyodide_ffi.to_js
     HAS_PYODIDE = True
 except ModuleNotFoundError as exc:
-    if exc.name not in {"js", "pyodide"}:
+    if exc.name not in {"js", "pyodide", "pyodide.ffi"}:
         raise
-    js = None  # type: ignore[assignment]
-    JsProxy = None  # type: ignore[assignment,misc]
-    jsnull = None  # type: ignore[assignment]
-    _pyodide_to_js = None  # type: ignore[assignment]
+    js: Any = None
+    JsProxy: Any = None
+    jsnull: Any = None
+    _pyodide_to_js: Any = None
     HAS_PYODIDE = False
 
-    class JsException(Exception):  # type: ignore[no-redef]
+    class JsException(Exception):
         """Stub outside Pyodide."""
 
 
@@ -92,10 +91,11 @@ def to_js(value: Any) -> Any:
     """Convert Python values to JavaScript values suitable for Workers APIs."""
     if not HAS_PYODIDE or _pyodide_to_js is None:
         return value
+    js_module = cast(Any, js)
     try:
-        return _pyodide_to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
+        return _pyodide_to_js(value, dict_converter=js_module.Object.fromEntries, create_pyproxies=False)
     except TypeError:
-        return _pyodide_to_js(value, dict_converter=js.Object.fromEntries)
+        return _pyodide_to_js(value, dict_converter=js_module.Object.fromEntries)
 
 
 def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
@@ -184,7 +184,10 @@ async def stream_r2_body(r2_obj: Any) -> Any:
 def get_r2_size(r2_obj: Any) -> int | None:
     """Return an R2 object's size when available."""
     size = getattr(r2_obj, "size", None)
-    return None if is_js_missing(size) else int(size)
+    if is_js_missing(size):
+        return None
+    concrete_size = cast(Any, size)
+    return int(concrete_size)
 
 
 __all__ = [
