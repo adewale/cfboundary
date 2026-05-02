@@ -71,15 +71,8 @@ def is_js_null(value: Any) -> bool:
 
 
 def is_js_missing(value: Any) -> bool:
-    """Return True for JS ``null`` or JS ``undefined`` crossing into Python."""
-    if value is None or is_js_null(value):
-        return True
-    if HAS_PYODIDE and js is not None:
-        try:
-            return value is js.undefined
-        except AttributeError:
-            return False
-    return False
+    """Return True for Python ``None``/JS ``undefined`` or JS ``null``."""
+    return value is None or is_js_null(value)
 
 
 def d1_null(value: Any = None) -> Any:
@@ -106,7 +99,7 @@ def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
 
 
 def to_py(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any:
-    """Recursively convert JsProxy/null/undefined values to native Python."""
+    """Recursively convert JsProxy, JS null, and missing values to native Python."""
     if _depth is not None:
         depth = _depth
     if depth >= MAX_CONVERSION_DEPTH:

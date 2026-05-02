@@ -1,3 +1,3 @@
-"""CFBoundary: small Cloudflare Python Workers boundary and deployment toolkit."""
+"""CFBoundary: small Cloudflare Python Workers FFI boundary helpers."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.11"

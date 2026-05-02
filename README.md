@@ -5,7 +5,7 @@ CFBoundary is a small Cloudflare Python Workers FFI helper library. It now keeps
 ## Install
 
 ```bash
-uv add 'cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.10'
+uv add 'cfboundary @ git+https://github.com/adewale/cfboundary@v0.1.11'
 ```
 
 ## Public API
@@ -33,7 +33,7 @@ from cfboundary.ffi import (
 
 These helpers cover the generic Pyodide/JavaScript boundary only:
 
-- JavaScript `null` / missing-value semantics;
+- JavaScript `null` as `pyodide.ffi.jsnull` and JavaScript `undefined` as Python `None`;
 - Python ↔ JavaScript value conversion;
 - D1 `None` → JS `null` bind values;
 - byte and stream conversion helpers used by R2-style bodies;

@@ -4,6 +4,13 @@ All notable changes to cfboundary are documented here.
 
 Historical entries before 0.1.9 may mention APIs that were later removed when the package was narrowed to the used shared FFI core.
 
+## 0.1.11 - 2026-05-02
+
+### Changed
+
+- Simplified missing-value detection to reflect current Python Workers semantics: JavaScript `undefined` arrives as Python `None`, while JavaScript `null` is represented by `pyodide.ffi.jsnull`.
+- Updated docs and fake-runtime tests to avoid modeling a separate `JsUndefined` value.
+
 ## 0.1.10 - 2026-04-27
 
 ### Changed

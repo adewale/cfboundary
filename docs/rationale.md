@@ -5,7 +5,7 @@ CFBoundary is an extraction of code proven in both `tasche` and `planet_cf`, nar
 The package keeps generic boundary mechanics:
 
 - Python ↔ JavaScript value conversion;
-- Pyodide `null` / `undefined` / missing-value handling;
+- Pyodide `jsnull` / Python `None` missing-value handling;
 - D1 `None` → JS `null` bind values;
 - byte and readable-stream helpers used around R2-style bodies;
 - fake Pyodide runtime setup for CPython tests.

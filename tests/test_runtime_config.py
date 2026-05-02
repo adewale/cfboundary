@@ -27,21 +27,20 @@ def test_configure_runtime_overrides_and_restores_conversion_globals() -> None:
 
     sentinel = JsNull()
     other_null = JsNull()
-    undefined = object()
 
     def fake_to_js(value, **kwargs):
         return {"value": value, "kwargs": kwargs}
 
     core.configure_runtime(
         has_pyodide=True,
-        js_module=type("JS", (), {"Object": type("Object", (), {"fromEntries": object()}), "undefined": undefined})(),
+        js_module=type("JS", (), {"Object": type("Object", (), {"fromEntries": object()})})(),
         js_proxy_type=Proxy,
         js_null_value=sentinel,
         to_js_func=fake_to_js,
     )
     try:
         assert ffi.js_null() is sentinel
-        assert ffi.to_py(Proxy({"x": sentinel, "y": other_null, "z": undefined})) == {
+        assert ffi.to_py(Proxy({"x": sentinel, "y": other_null, "z": None})) == {
             "x": None,
             "y": None,
             "z": None,
