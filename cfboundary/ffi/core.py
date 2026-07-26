@@ -84,7 +84,7 @@ def to_js(value: Any) -> Any:
     """Convert Python values to JavaScript values suitable for Workers APIs."""
     if not HAS_PYODIDE or _pyodide_to_js is None:
         return value
-    js_module = cast(Any, js)
+    js_module = js
     try:
         return _pyodide_to_js(value, dict_converter=js_module.Object.fromEntries, create_pyproxies=False)
     except TypeError:
@@ -111,7 +111,7 @@ def to_py(value: Any, depth: int = 0, *, _depth: int | None = None) -> Any:
     if (HAS_PYODIDE and JsProxy is not None and isinstance(value, JsProxy)) or hasattr(value, "to_py"):
         try:
             return to_py(value.to_py(), depth + 1)
-        except Exception:
+        except Exception:  # ruff: ignore[BLE001] JS proxy conversion can raise host exceptions
             return None
     if isinstance(value, dict):
         return {k: to_py(v, depth + 1) for k, v in value.items()}
@@ -184,18 +184,18 @@ def get_r2_size(r2_obj: Any) -> int | None:
 
 
 __all__ = [
-    "JsException",
     "MAX_CONVERSION_DEPTH",
+    "JsException",
+    "consume_readable_stream",
+    "d1_null",
+    "get_r2_size",
+    "is_js_missing",
+    "is_js_null",
     "is_pyodide_runtime",
     "js_null",
-    "is_js_null",
-    "is_js_missing",
-    "d1_null",
-    "to_py",
+    "stream_r2_body",
     "to_js",
     "to_js_bytes",
+    "to_py",
     "to_py_bytes",
-    "consume_readable_stream",
-    "stream_r2_body",
-    "get_r2_size",
 ]

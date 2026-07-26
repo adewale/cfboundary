@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-import cfboundary.ffi as ffi
-import cfboundary.ffi.core as core
+from cfboundary import ffi
+from cfboundary.ffi import core
 
 
 def test_configure_runtime_overrides_and_restores_conversion_globals() -> None:

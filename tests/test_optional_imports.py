@@ -11,9 +11,9 @@ import pytest
 def _restore_core(old_module: ModuleType | None) -> None:
     if old_module is not None:
         sys.modules["cfboundary.ffi.core"] = old_module
-        import cfboundary.ffi as ffi
+        from cfboundary import ffi
 
-        setattr(ffi, "core", old_module)
+        setattr(ffi, "core", old_module)  # ruff: ignore[B010] Restores a module attribute dynamically
     else:
         sys.modules.pop("cfboundary.ffi.core", None)
 
