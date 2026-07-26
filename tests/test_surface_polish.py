@@ -3,7 +3,7 @@ from __future__ import annotations
 from hypothesis import given
 from hypothesis import strategies as st
 
-import cfboundary.ffi as ffi
+from cfboundary import ffi
 from cfboundary.ffi import is_js_missing, is_js_null, js_null, to_js, to_py
 from cfboundary.testing.fakes import patch_pyodide_runtime
 

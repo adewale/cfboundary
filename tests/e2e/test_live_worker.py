@@ -5,7 +5,6 @@ import urllib.request
 
 import pytest
 
-
 BASE_URL = os.environ.get("CFBOUNDARY_E2E_BASE_URL") or ""
 
 

@@ -4,7 +4,7 @@
 from typing import Any
 
 # Headers can be dict or list of tuples (for multi-value headers like Set-Cookie)
-HeadersType = dict[str, str] | list[tuple[str, str]] | None
+type HeadersType = dict[str, str] | list[tuple[str, str]] | None
 
 class Response:
     """Cloudflare Workers Response object."""
