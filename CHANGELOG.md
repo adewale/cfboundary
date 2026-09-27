@@ -4,6 +4,17 @@ All notable changes to cfboundary are documented here.
 
 Historical entries before 0.1.9 may mention APIs that were later removed when the package was narrowed to the used shared FFI core.
 
+## Unreleased
+
+### Added
+
+- A real-Pyodide test tier (`tests/pyodide/`, CI job `real-pyodide`) that runs the library inside the npm `pyodide` package in Node and pins boundary semantics the CPython fakes cannot model, including that a `None` dict value passed to `to_js()` becomes JS `undefined` and is dropped by `JSON.stringify`.
+
+### Changed
+
+- `to_js()` no longer retries without `create_pyproxies` when the converter raises `TypeError`. Real Pyodide raises `ConversionError` for unconvertible values, so the retry only ever ran for test doubles. Custom `to_js_func` fakes passed to `patch_pyodide_runtime()` must accept `create_pyproxies` (or `**kwargs`).
+- Coverage now omits `cfboundary/testing/fakes.py`, so the 100% gate measures library code only.
+
 ## 0.1.11 - 2026-05-02
 
 ### Changed
