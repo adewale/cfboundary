@@ -16,13 +16,6 @@ json_values = st.recursive(
 )
 
 
-def test_preferred_public_names_are_exported_from_ffi() -> None:
-    assert callable(ffi.to_py)
-    assert callable(ffi.to_js)
-    assert callable(ffi.js_null)
-    assert callable(ffi.is_js_missing)
-
-
 def test_star_import_surface_has_no_private_or_compat_names() -> None:
     assert "to_py" in ffi.__all__
     assert "to_js" in ffi.__all__
@@ -37,8 +30,8 @@ def test_star_import_surface_has_no_private_or_compat_names() -> None:
 
 
 @given(json_values)
-def test_to_py_is_idempotent_for_python_values(value) -> None:
-    assert to_py(to_py(value)) == to_py(value)
+def test_to_py_returns_plain_python_values_unchanged(value) -> None:
+    assert to_py(value) == value
 
 
 @given(json_values)
@@ -58,8 +51,7 @@ def test_to_js_is_identity_in_cpython(value) -> None:
 def test_d1_null_only_changes_none(value) -> None:
     from cfboundary.ffi import d1_null
 
-    if value is not None:
-        assert d1_null(value) == value
+    assert d1_null(value) is value
 
 
 def test_pyodide_fake_null_surface_uses_public_names() -> None:

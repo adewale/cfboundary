@@ -16,7 +16,7 @@ uv build
 
 The conversion boundary is tested with Hypothesis to verify invariants such as:
 
-- `to_py(to_py(value)) == to_py(value)` for Python values.
+- `to_py(value) == value` for plain Python (JSON-shaped) values.
 - `to_js(value) == value` in CPython fallback mode.
 - `d1_null(value) == value` for non-`None` values.
 
