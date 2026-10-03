@@ -22,6 +22,8 @@ class FakeJsProxy:
         return self._value
 
     def __getattr__(self, name: str) -> Any:
+        if name == "_value" or name.startswith("__"):
+            raise AttributeError(name)
         if isinstance(self._value, dict):
             try:
                 return self._value[name]

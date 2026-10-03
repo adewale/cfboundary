@@ -30,3 +30,9 @@ def test_fake_js_null_is_falsy_like_real_jsnull() -> None:
     assert not JsNull()
     with patch_pyodide_runtime():
         assert not js_null()
+
+
+def test_fake_proxy_dunder_lookups_do_not_recurse() -> None:
+    # Real proxies report missing dunders as absent; copy/pickle probe them before __init__ runs.
+    assert hasattr(FakeJsProxy({}), "__setstate__") is False
+    assert hasattr(FakeJsProxy.__new__(FakeJsProxy), "anything") is False
