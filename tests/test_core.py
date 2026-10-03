@@ -43,7 +43,13 @@ def test_to_py_terminates_on_cyclic_values() -> None:
     entries: dict = {}
     proxy_cycle = FakeJsProxy(entries)
     entries["self"] = proxy_cycle
-    assert set(to_py(proxy_cycle)) == {"self"}
+    node = to_py(proxy_cycle)
+    levels = 0
+    while isinstance(node, dict):
+        node = node["self"]
+        levels += 1
+    assert node is proxy_cycle or node is entries
+    assert 0 < levels <= MAX_CONVERSION_DEPTH
 
 
 def test_get_r2_size_treats_js_null_as_missing_and_keeps_zero() -> None:

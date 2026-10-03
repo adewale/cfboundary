@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from cfboundary import ffi
@@ -30,6 +30,7 @@ def test_star_import_surface_has_no_private_or_compat_names() -> None:
 
 
 @given(json_values)
+@example({1: "int key", "nested": {2: None}})
 def test_to_py_returns_plain_python_values_unchanged(value) -> None:
     assert to_py(value) == value
 
