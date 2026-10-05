@@ -15,6 +15,10 @@ Historical entries before 0.1.9 may mention APIs that were later removed when th
 - `to_js()` no longer retries without `create_pyproxies` when the converter raises `TypeError`. Real Pyodide raises `ConversionError` for unconvertible values, so the retry only ever ran for test doubles. Custom `to_js_func` fakes passed to `patch_pyodide_runtime()` must accept `create_pyproxies` (or `**kwargs`).
 - Coverage now omits `cfboundary/testing/fakes.py`, so the 100% gate measures library code only.
 
+### Fixed
+
+- `cfboundary.testing.FakeJsProxy` raises `AttributeError` for missing keys and missing dunders (so `getattr` defaults, `hasattr` and `copy` work), and `JsNull` is falsy, matching real Pyodide.
+
 ## 0.1.11 - 2026-05-02
 
 ### Changed
