@@ -61,6 +61,11 @@ def check_js_null_and_d1_null_return_real_jsnull() -> None:
     assert d1_null(False) is False
 
 
+def check_jsnull_is_falsy_and_named_jsnull() -> None:
+    assert not pyodide_ffi.jsnull
+    assert type(pyodide_ffi.jsnull).__name__ == "JsNull"
+
+
 def check_js_null_and_undefined_arrive_differently() -> None:
     value = _js("{present_null: null, present_undefined: undefined}")
     # JS null arrives as jsnull; undefined arrives as Python None.
