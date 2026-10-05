@@ -10,6 +10,9 @@ from typing import Any
 class JsNull:
     """Fake for ``pyodide.ffi.jsnull``."""
 
+    def __bool__(self) -> bool:
+        return False
+
 
 class FakeJsProxy:
     def __init__(self, value: Any):
@@ -19,8 +22,13 @@ class FakeJsProxy:
         return self._value
 
     def __getattr__(self, name: str) -> Any:
+        if name == "_value" or name.startswith("__"):
+            raise AttributeError(name)
         if isinstance(self._value, dict):
-            return self._value[name]
+            try:
+                return self._value[name]
+            except KeyError:
+                raise AttributeError(name) from None
         return getattr(self._value, name)
 
     def __getitem__(self, key: Any) -> Any:
