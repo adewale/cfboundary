@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any
 
@@ -54,7 +54,7 @@ def patch_pyodide_runtime(
     js_proxy_type: Any | None = None,
     js_null_value: Any | None = None,
     to_js_func: Any | None = None,
-) -> Iterator[Any]:
+) -> Generator[Any, None, None]:
     """Temporarily install a fake CFBoundary Pyodide runtime for tests."""
     import cfboundary.ffi.core as target
 
