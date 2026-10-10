@@ -31,6 +31,12 @@ The conversion boundary is tested with Hypothesis to verify invariants such as:
 - `to_js(value) == value` in CPython fallback mode.
 - `d1_null(value) == value` for non-`None` values.
 
+`tests/conftest.py` loads a fixed Hypothesis profile for every run, local and CI: 100 examples per property (Hypothesis's default) with `derandomize=True`, so a failure reproduces exactly. For a deeper, randomized run on demand (not part of CI):
+
+```bash
+uv run pytest tests/test_surface_polish.py --hypothesis-profile=deep
+```
+
 ## Live E2E tests
 
 Live tests are skipped by default and run only when a deployed Worker URL is provided:

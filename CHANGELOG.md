@@ -14,6 +14,7 @@ Historical entries before 0.1.9 may mention APIs that were later removed when th
 
 - `to_js()` no longer retries without `create_pyproxies` when the converter raises `TypeError`. Real Pyodide raises `ConversionError` for unconvertible values, so the retry only ever ran for test doubles. Custom `to_js_func` fakes passed to `patch_pyodide_runtime()` must accept `create_pyproxies` (or `**kwargs`).
 - Coverage now omits `cfboundary/testing/fakes.py`, so the 100% gate measures library code only.
+- Hypothesis tests run under a fixed profile (`tests/conftest.py`): 100 examples per property, derandomized, so CI failures reproduce. `--hypothesis-profile=deep` runs a larger randomized search on demand.
 
 ### Fixed
 
