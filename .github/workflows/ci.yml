@@ -34,15 +34,9 @@ jobs:
         run: uvx ty check cfboundary tests
       - name: Tests
         run: uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100
-      - name: Build package
-        run: uv build
-
-  real-pyodide:
-    # Runs the FFI helpers inside real Pyodide (npm `pyodide`, pinned in tests/pyodide/package.json)
-    # to check the JsProxy/jsnull/to_js semantics the CPython fakes cannot model. No credentials.
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      # Runs the FFI helpers inside real Pyodide (npm `pyodide`, pinned in tests/pyodide/package.json)
+      # to check the JsProxy/jsnull/to_js semantics the CPython fakes cannot model. No credentials,
+      # no network after `npm ci`. Cheap and deterministic: about 4 s of steps, so no separate job.
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -53,3 +47,5 @@ jobs:
         run: npm ci --prefix tests/pyodide
       - name: Real Pyodide boundary tests
         run: npm test --prefix tests/pyodide
+      - name: Build package
+        run: uv build

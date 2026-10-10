@@ -8,7 +8,7 @@ Historical entries before 0.1.9 may mention APIs that were later removed when th
 
 ### Added
 
-- A real-Pyodide test tier (`tests/pyodide/`, CI job `real-pyodide`) that runs the library inside the npm `pyodide` package in Node and pins boundary semantics the CPython fakes cannot model, including that a `None` dict value passed to `to_js()` becomes JS `undefined` and is dropped by `JSON.stringify`.
+- A real-Pyodide test tier (`tests/pyodide/`, run as steps in the existing CI `python` job) that runs the library inside the npm `pyodide` package in Node and pins boundary semantics the CPython fakes cannot model, including that a `None` dict value passed to `to_js()` becomes JS `undefined` and is dropped by `JSON.stringify`.
 
 ### Changed
 

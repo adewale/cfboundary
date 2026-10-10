@@ -21,7 +21,7 @@ npm ci --prefix tests/pyodide
 npm test --prefix tests/pyodide
 ```
 
-Each `check_*` function in `tests/pyodide/real_runtime_checks.py` becomes one `node:test` case. The Pyodide version is pinned in `tests/pyodide/package.json`; bump it deliberately and let these checks tell you what changed. CI runs this tier in the `real-pyodide` job.
+Each `check_*` function in `tests/pyodide/real_runtime_checks.py` becomes one `node:test` case. The Pyodide version is pinned in `tests/pyodide/package.json`; bump it deliberately and let these checks tell you what changed. CI runs this tier as steps in the existing `python` job (about 4 s, including `npm ci`); there is no separate job.
 
 ## Property-based tests
 

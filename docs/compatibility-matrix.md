@@ -6,7 +6,7 @@ CFBoundary should be tested against both sides of the Cloudflare Python Workers 
 |---|---|---|---|
 | CPython fallback | Ensures imports and helpers work in normal local tests. | `uv run pytest`. | Yes |
 | Pyodide fake | Exercises branches that use `js`, `JsProxy`, `jsnull`, and Pyodide `to_js`. The fakes are identity stubs: they check which calls are made, not what real Pyodide returns. | `cfboundary.testing.patch_pyodide_runtime()`. | Yes |
-| Real Pyodide in Node | Runs the unmodified library against the real `JsProxy`, `jsnull`, `to_js`, `Uint8Array` and `ReadableStream`, with no Cloudflare credentials. Pins the semantics in the table below. | `npm ci --prefix tests/pyodide && npm test --prefix tests/pyodide` (Pyodide version pinned in `tests/pyodide/package.json`). | Yes (`real-pyodide` job) |
+| Real Pyodide in Node | Runs the unmodified library against the real `JsProxy`, `jsnull`, `to_js`, `Uint8Array` and `ReadableStream`, with no Cloudflare credentials. Pins the semantics in the table below. | `npm ci --prefix tests/pyodide && npm test --prefix tests/pyodide` (Pyodide version pinned in `tests/pyodide/package.json`). | Yes (steps in the `python` job) |
 | Deployed Worker smoke | Catches platform behavior Pyodide-in-Node cannot model (D1, R2, KV bindings). | `CFBOUNDARY_E2E_BASE_URL=... uv run pytest tests/e2e`. | Manual (`e2e.yml`, `workflow_dispatch`) |
 
 The real-Pyodide tier uses the npm `pyodide` package, not the exact build a Worker runs, so it catches semantics that belong to Pyodide itself. Bindings and Workers-only globals still need the deployed smoke.
