@@ -1,0 +1,15 @@
+{
+  "name": "cfboundary-real-pyodide-tests",
+  "private": true,
+  "description": "Runs cfboundary's FFI helpers inside real Pyodide (Node) to check the boundary semantics the CPython fakes cannot model.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test run_real_pyodide.test.mjs"
+  },
+  "devDependencies": {
+    "pyodide": "0.28.3"
+  }
+}

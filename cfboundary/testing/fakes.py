@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any
 
 
 class JsNull:
     """Fake for ``pyodide.ffi.jsnull``."""
+
+    def __bool__(self) -> bool:
+        return False
 
 
 class FakeJsProxy:
@@ -19,8 +22,13 @@ class FakeJsProxy:
         return self._value
 
     def __getattr__(self, name: str) -> Any:
+        if name == "_value" or name.startswith("__"):
+            raise AttributeError(name)
         if isinstance(self._value, dict):
-            return self._value[name]
+            try:
+                return self._value[name]
+            except KeyError:
+                raise AttributeError(name) from None
         return getattr(self._value, name)
 
     def __getitem__(self, key: Any) -> Any:
@@ -46,7 +54,7 @@ def patch_pyodide_runtime(
     js_proxy_type: Any | None = None,
     js_null_value: Any | None = None,
     to_js_func: Any | None = None,
-) -> Iterator[Any]:
+) -> Generator[Any, None, None]:
     """Temporarily install a fake CFBoundary Pyodide runtime for tests."""
     import cfboundary.ffi.core as target
 

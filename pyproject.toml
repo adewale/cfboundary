@@ -54,6 +54,9 @@ testpaths = ["tests"]
 [tool.coverage.run]
 source = ["cfboundary"]
 branch = true
+# Test doubles are exercised by the suite but are not the code under test; counting them
+# would pad the 100% gate. Real-runtime behaviour is covered by tests/pyodide instead.
+omit = ["cfboundary/testing/fakes.py"]
 
 [tool.coverage.report]
 fail_under = 100

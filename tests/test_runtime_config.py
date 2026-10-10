@@ -61,27 +61,12 @@ def test_configure_runtime_overrides_and_restores_conversion_globals() -> None:
         )
 
 
-def test_to_js_runtime_override_supports_legacy_fake_without_create_pyproxies() -> None:
+def test_to_js_runtime_override_propagates_converter_errors_without_retrying() -> None:
     original = (core.HAS_PYODIDE, core.js, core._pyodide_to_js)
-
-    def legacy_to_js(value, *, dict_converter=None):
-        return {"value": value, "dict_converter": dict_converter}
-
-    core.configure_runtime(
-        has_pyodide=True,
-        js_module=type("JS", (), {"Object": type("Object", (), {"fromEntries": object()})})(),
-        to_js_func=legacy_to_js,
-    )
-    try:
-        assert ffi.to_js({"a": 1})["value"] == {"a": 1}
-    finally:
-        core.configure_runtime(has_pyodide=original[0], js_module=original[1], to_js_func=original[2])
-
-
-def test_to_js_runtime_override_reraises_non_signature_type_error() -> None:
-    original = (core.HAS_PYODIDE, core.js, core._pyodide_to_js)
+    calls = []
 
     def bad_to_js(value, **kwargs):
+        calls.append(kwargs)
         raise TypeError("bad value")
 
     core.configure_runtime(
@@ -90,7 +75,8 @@ def test_to_js_runtime_override_reraises_non_signature_type_error() -> None:
         to_js_func=bad_to_js,
     )
     try:
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match="bad value"):
             ffi.to_js({"a": 1})
+        assert len(calls) == 1
     finally:
         core.configure_runtime(has_pyodide=original[0], js_module=original[1], to_js_func=original[2])

@@ -84,11 +84,7 @@ def to_js(value: Any) -> Any:
     """Convert Python values to JavaScript values suitable for Workers APIs."""
     if not HAS_PYODIDE or _pyodide_to_js is None:
         return value
-    js_module = js
-    try:
-        return _pyodide_to_js(value, dict_converter=js_module.Object.fromEntries, create_pyproxies=False)
-    except TypeError:
-        return _pyodide_to_js(value, dict_converter=js_module.Object.fromEntries)
+    return _pyodide_to_js(value, dict_converter=js.Object.fromEntries, create_pyproxies=False)
 
 
 def to_js_bytes(data: bytes | bytearray | memoryview) -> Any:
