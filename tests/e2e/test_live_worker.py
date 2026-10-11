@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import urllib.request
 
@@ -50,4 +51,4 @@ def test_live_worker_compat_probes() -> None:
     status, body, headers = _get("/compat")
     assert status == 200
     assert "application/json" in headers.get("Content-Type", headers.get("content-type", ""))
-    assert "eval_blocked" in body
+    assert json.loads(body) == {"pyodide_runtime": True}

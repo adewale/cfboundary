@@ -25,15 +25,13 @@ def test_to_js_pyodide_paths() -> None:
 
     def converter(value, **kwargs):
         calls.append(kwargs)
-        if "create_pyproxies" in kwargs:
-            raise TypeError("legacy")
         return {"converted": value}
 
     with patch_pyodide_runtime(to_js_func=converter):
         assert to_js({"x": 1}) == {"converted": {"x": 1}}
-        assert calls[0]["dict_converter"] is FakeJsModule.Object.fromEntries
-        assert calls[0]["create_pyproxies"] is False
-        assert calls[1] == {"dict_converter": FakeJsModule.Object.fromEntries}
+    assert calls == [
+        {"dict_converter": FakeJsModule.Object.fromEntries, "create_pyproxies": False}
+    ]
 
 
 def test_to_js_bytes_pyodide_and_cpython_paths() -> None:

@@ -63,10 +63,13 @@ App projects should keep boundary classes, deployment checks, smoke tests, row f
 
 ## Validation
 
-Current package tests run with 100% line/branch coverage:
+Current package tests run with 100% line/branch coverage (test doubles excluded), and a second tier runs the library inside real Pyodide in Node:
 
 ```bash
 uv run ruff check .
 uv run pytest --cov=cfboundary --cov-branch --cov-report=term-missing --cov-fail-under=100 -q
+npm ci --prefix tests/pyodide && npm test --prefix tests/pyodide
 uv build
 ```
+
+One boundary behaviour worth knowing: `to_js({"k": None})` produces a JS object whose `k` is `undefined`, so `JSON.stringify` drops the key. Use `js_null()` or `d1_null()` for values that must arrive as `null`. See [docs/compatibility-matrix.md](docs/compatibility-matrix.md).

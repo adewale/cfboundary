@@ -1,39 +1,22 @@
 from __future__ import annotations
 
-import pytest
-
-from cfboundary.ffi import d1_null, is_js_missing, is_js_null, js_null, to_js, to_py
-from cfboundary.testing.fakes import FakeJsProxy, patch_pyodide_runtime
+from cfboundary.ffi import d1_null, is_js_missing, is_js_null, js_null
+from cfboundary.testing.fakes import patch_pyodide_runtime
 
 
-@pytest.mark.parametrize("runtime", ["cpython", "pyodide-fake"])
-def test_null_undefined_matrix(runtime: str) -> None:
-    context = patch_pyodide_runtime() if runtime == "pyodide-fake" else _null_context()
-    with context:
-        null_value = js_null()
+def test_cpython_fallback_uses_none_for_js_null() -> None:
+    assert js_null() is None
+    assert d1_null(None) is None
+    assert is_js_null(None) is False
+    assert is_js_missing(None) is True
+
+
+def test_pyodide_runtime_binds_none_as_the_runtime_js_null() -> None:
+    sentinel = object()
+    with patch_pyodide_runtime(js_null_value=sentinel):
+        assert js_null() is sentinel
+        assert d1_null(None) is sentinel
+        assert is_js_null(sentinel) is True
+        assert is_js_missing(sentinel) is True
         assert is_js_null(None) is False
         assert is_js_missing(None) is True
-        if runtime == "pyodide-fake":
-            assert is_js_null(null_value) is True
-            assert d1_null(None) is null_value
-        else:
-            assert null_value is None
-            assert d1_null(None) is None
-
-
-@pytest.mark.parametrize("runtime", ["cpython", "pyodide-fake"])
-def test_conversion_matrix(runtime: str) -> None:
-    context = patch_pyodide_runtime() if runtime == "pyodide-fake" else _null_context()
-    with context:
-        null_value = js_null()
-        value = {"a": FakeJsProxy({"b": null_value}) if runtime == "pyodide-fake" else {"b": None}}
-        assert to_py(value) == {"a": {"b": None}}
-        assert to_js({"x": [1, 2]}) == {"x": [1, 2]}
-
-
-class _null_context:
-    def __enter__(self):
-        return None
-
-    def __exit__(self, *args):
-        return False
